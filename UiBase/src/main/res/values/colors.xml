@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="colorPrimary">#c51162</color>
+    <color name="colorPrimaryVariant">#8e0038</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+
+    <color name="colorSecondary">#75ccb9</color>
+    <color name="colorSecondaryVariant">#006c5c</color>
+    <color name="colorOnSecondary">#000000</color>
+
+
+    <color name="colorBackground">#FFFFFF</color>
+    <color name="colorOnBackground">#000000</color>
+
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorOnSurface">#000000</color>
+
+    <color name="colorError">#B00020</color>
+    <color name="colorOnError">#FFFFFF</color>
+
+    <color name="searchBarHintColor">#99000000</color>
+    <color name="searchBarTextColor">#000000</color>
+
+
+</resources>
