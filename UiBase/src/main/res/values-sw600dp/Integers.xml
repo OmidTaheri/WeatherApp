@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <integer name="animation_duration">1000</integer>
     <integer name="long_animation_duration">1500</integer>
 
-    <integer name="glide_poster_size">200</integer>
-    <integer name="glide_backdrop_size">220</integer>
-    <integer name="glide_main_backdrop_size">400</integer>
 </resources>

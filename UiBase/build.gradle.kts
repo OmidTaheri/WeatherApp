@@ -31,8 +31,8 @@ android {
             isMinifyEnabled = BuildTypeRelease.isMinifyEnabled
             isDebuggable = BuildTypeRelease.debuggable
             isTestCoverageEnabled = BuildTypeRelease.isTestCoverageEnabled
-            buildConfigStringField("BACKDROP_URL", "http://image.tmdb.org/t/p/w500")
-            buildConfigStringField("POSTER_URL", "http://image.tmdb.org/t/p/w500")
+
+            buildConfigStringField("ICON_URL", "http://openweathermap.org/img/wn")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -43,8 +43,8 @@ android {
             isMinifyEnabled = BuildTypeDebug.isMinifyEnabled
             isDebuggable = BuildTypeDebug.debuggable
             isTestCoverageEnabled = BuildTypeDebug.isTestCoverageEnabled
-            buildConfigStringField("BACKDROP_URL", "http://image.tmdb.org/t/p/w500")
-            buildConfigStringField("POSTER_URL", "http://image.tmdb.org/t/p/w500")
+
+            buildConfigStringField("ICON_URL", "http://openweathermap.org/img/wn")
         }
     }
 
@@ -71,6 +71,7 @@ dependencies {
     implementation(UiDependencies.APPCOMPAT)
     implementation(UiDependencies.MATERIAL)
     implementation(UiDependencies.GLIDE)
+    implementation(UiDependencies.COLOR_PALETTE)
     kapt(AnnotationProcessorsDependencies.GLIDE_COMPILER)
     implementation(Dependencies.RETROFIT_CONVERTER)
     addTestsDependencies()
