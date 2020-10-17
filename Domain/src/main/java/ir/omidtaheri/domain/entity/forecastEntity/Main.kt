@@ -6,5 +6,5 @@ data class Main(
     val pressure: Int,
     val temp: Double,
     val temp_max: Double,
-    val temp_min: Int
+    val temp_min: Double
 )
