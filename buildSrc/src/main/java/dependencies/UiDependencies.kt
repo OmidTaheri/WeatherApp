@@ -46,4 +46,8 @@ object UiDependencies {
     const val LEANBACK_PAGING =
         "androidx.leanback:leanback-paging:${BuildDependenciesVersions.UiDependenciesVersions.LEANBACK}"
 
+    const val COLOR_PALETTE =
+        "androidx.palette:palette:${BuildDependenciesVersions.UiDependenciesVersions.COLOR_PALETTE}"
+
+
 }
