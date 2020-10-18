@@ -66,4 +66,8 @@ object Dependencies {
     const val multidex =
         "androidx.multidex:multidex:${BuildDependenciesVersions.DependenciesVersions.MULTIDEX}"
 
+
+    const val JodaTime =
+        "joda-time:joda-time:${BuildDependenciesVersions.DependenciesVersions.JODATIME}"
+
 }
