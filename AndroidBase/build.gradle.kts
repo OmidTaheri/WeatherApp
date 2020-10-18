@@ -75,7 +75,7 @@ dependencies {
     implementation(UiDependencies.RECYCLE_VIEW)
     implementation(Dependencies.RX_ANDROID)
     implementation(Dependencies.RX_JAVA)
-
+    implementation(Dependencies.JodaTime)
 
     kapt(AnnotationProcessorsDependencies.DAGGER)
     implementation(Dependencies.DAGGER)
