@@ -48,8 +48,9 @@ android {
             isDebuggable = BuildTypeRelease.debuggable
             isTestCoverageEnabled = BuildTypeRelease.isTestCoverageEnabled
             isShrinkResources = BuildTypeRelease.isMinifyEnabled
-            buildConfigStringField("BASE_URL", "https://api.themoviedb.org/3/")
+            buildConfigStringField("BASE_URL", "http://api.openweathermap.org/")
             buildConfigStringField("API_KEY", getLocalProperty("API.KEY"))
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -64,7 +65,7 @@ android {
             isDebuggable = BuildTypeDebug.debuggable
             isTestCoverageEnabled = BuildTypeDebug.isTestCoverageEnabled
             isShrinkResources = BuildTypeDebug.isMinifyEnabled
-            buildConfigStringField("BASE_URL", "https://api.themoviedb.org/3/")
+            buildConfigStringField("BASE_URL", "http://api.openweathermap.org/")
             buildConfigStringField("API_KEY", getLocalProperty("API.KEY"))
         }
     }
@@ -73,13 +74,15 @@ android {
 
     productFlavors {
         FullFlavor.appCreate(this)
-        DemoFlavor.appCreate(this)
-        FullQAFlavor.appCreate(this)
     }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    buildFeatures {
+        viewBinding = true
     }
 
     kotlinOptions {
@@ -105,16 +108,13 @@ dependencies {
 
     implementation(Dependencies.multidex)
 
-//            implementation(project(mapOf("path" to BuildModules.Data)))
-//            implementation(project(mapOf("path" to BuildModules.Domain)))
-//
-//            implementation(project(mapOf("path" to BuildModules.DaggerCore)))
-//
-//            implementation(project(mapOf("path" to BuildModules.MainPage)))
-//            implementation(project(mapOf("path" to BuildModules.Search)))
-//            implementation(project(mapOf("path" to BuildModules.Favorite)))
-//            implementation(project(mapOf("path" to BuildModules.GenreList)))
-//            implementation(project(mapOf("path" to BuildModules.UiBase)))
+    implementation(project(mapOf("path" to BuildModules.Data)))
+    implementation(project(mapOf("path" to BuildModules.Domain)))
+
+    implementation(project(mapOf("path" to BuildModules.DaggerCore)))
+
+    implementation(project(mapOf("path" to BuildModules.MainPage)))
+    implementation(project(mapOf("path" to BuildModules.UiBase)))
 
     implementation(JetpackDependencies.NAVIGATION_FRAGMENT)
     implementation(JetpackDependencies.NAVIGATION_UI)
