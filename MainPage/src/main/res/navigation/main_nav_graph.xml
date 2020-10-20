@@ -1,11 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main_nav_graph"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_nav_graph"
     app:startDestination="@id/mainFragment">
 
     <fragment
         android:id="@+id/mainFragment"
         android:name="ir.omidtaheri.mainpage.ui.MainFragment.MainFragment"
-        android:label="MainFragment" />
+        android:label="MainFragment">
+
+
+        <action
+            android:id="@+id/action_mainFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment"
+            app:enterAnim="@anim/slide_in_from_left"
+            app:exitAnim="@anim/slide_out_from_right"
+            app:popEnterAnim="@anim/slide_in_from_right"
+            app:popExitAnim="@anim/slide_out_from_left" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="ir.omidtaheri.mainpage.ui.DetailFragment.DetailsFragment"
+        android:label="DetailsFragment">
+
+        <argument
+            android:name="forecastList"
+            app:argType="ir.omidtaheri.mainpage.entity.forecastEntity.forecastList[]" />
+
+        <argument
+            android:name="timeZone"
+            app:argType="integer" />
+
+        <argument
+            android:name="backgroundName"
+            app:argType="string" />
+
+        <argument
+            android:name="cityName"
+            app:argType="string" />
+    </fragment>
 
 </navigation>
