@@ -38,7 +38,9 @@ object TimeUtils {
             3 -> "dd" //Number  Day Of Month
             4 -> "EEEE , MMM dd" //Full Date
             5 -> "HH : mm" //Full Time
-            else -> "EEEE , MMM dd , HH : mm" //Full Date and Time
+            6 -> "EEEE , MMM dd , HH : mm" //Full Date and Time
+            7 -> "EEEE , HH : mm" //Full Date and Time
+            else-> "EEE , HH : mm" //Full Date and Time
         }
     }
 }
