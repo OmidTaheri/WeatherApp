@@ -15,7 +15,7 @@ fun ImageView.LoadWeatherIcon(iconName: String, myConetxt: Context) {
 
     GlideApp.with(myConetxt)
         .load(getImage(iconName, myConetxt))
-        .skipMemoryCache(true)
+        .skipMemoryCache(false)
         .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
         .into(this)
 }
@@ -25,9 +25,9 @@ fun View.LoadBackgroungImage(imageName: String, myConetxt: Context) {
 
     GlideApp.with(myConetxt)
         .load(getImage(imageName, myConetxt))
-        .skipMemoryCache(true)
-        .diskCacheStrategy(DiskCacheStrategy.NONE)
-        .override(700, 1080)
+        .skipMemoryCache(false)
+        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+        .override(350, 540)
         .into<CustomTarget<Drawable>>(
             object : CustomTarget<Drawable>() {
 
@@ -36,25 +36,7 @@ fun View.LoadBackgroungImage(imageName: String, myConetxt: Context) {
                     transition: Transition<in Drawable>?
                 ) {
 
-                    val a = animate().alpha(0F).setDuration(200)
-                        .setListener(object : Animator.AnimatorListener{
-                            override fun onAnimationStart(animation: Animator?) {
-                            }
-
-                            override fun onAnimationEnd(animation: Animator?) {
-                                background = resource
-                                animate().alpha(1F).setDuration(400).start()
-                            }
-
-                            override fun onAnimationCancel(animation: Animator?) {
-                            }
-
-                            override fun onAnimationRepeat(animation: Animator?) {
-                            }
-
-                        })
-
-                    a.start()
+                    background = resource
 
                 }
 
@@ -67,8 +49,8 @@ fun getImage(imageName: String, context: Context): Int {
     return context.getResources().getIdentifier(imageName, "drawable", context.getPackageName())
 }
 
-fun ImageView.clear(myconetxt: Context) {
-    GlideApp.with(myconetxt)
+fun View.clear() {
+    GlideApp.with(this)
         .clear(this)
 }
 
