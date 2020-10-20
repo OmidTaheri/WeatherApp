@@ -11,6 +11,7 @@ import android.view.animation.LayoutAnimationController
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,11 +24,14 @@ import ir.omidtaheri.daggercore.di.utils.DaggerInjectUtils
 import ir.omidtaheri.mainpage.R
 import ir.omidtaheri.mainpage.databinding.MainFragmentBinding
 import ir.omidtaheri.mainpage.di.components.DaggerMainComponent
-import ir.omidtaheri.mainpage.entity.forecastEntity.*
+import ir.omidtaheri.mainpage.entity.forecastEntity.Main
+import ir.omidtaheri.mainpage.entity.forecastEntity.Weather
+import ir.omidtaheri.mainpage.entity.forecastEntity.Wind
+import ir.omidtaheri.mainpage.entity.forecastEntity.forecastList
 import ir.omidtaheri.mainpage.ui.MainFragment.adapters.RecyclerViewAdapter
 import ir.omidtaheri.mainpage.ui.MainFragment.viewmodel.MainViewModel
 import ir.omidtaheri.uibase.LoadBackgroungImage
-import ir.omidtaheri.uibase.createPaletteSync
+import ir.omidtaheri.uibase.clear
 import ir.omidtaheri.uibase.onDestroyGlide
 import ir.omidtaheri.viewcomponents.MultiStateLargeCardview.MultiStateLargeCardview
 
@@ -60,6 +64,9 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
 
     var mainTimeZone: Int? = null
     var currentDay: Int? = null
+
+    lateinit var cityName: String
+    lateinit var backgroundName: String
 
     private lateinit var bottomAppBar: BottomAppBar
     private lateinit var page_background: View
@@ -150,6 +157,7 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
         viewModel.currentWeatherLiveData.observe(this, Observer {
 
             mainTimeZone = it.timezone
+            cityName = it.name
 
             largeCardView.toDateState(
                 it.name,
@@ -162,7 +170,7 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
             )
 
 
-            var backgroundName =
+            backgroundName =
                 viewModel.setBackgroundImage(it.weather.get(0).main, it.weather.get(0).icon)
 
             page_background.LoadBackgroungImage(backgroundName, requireContext())
@@ -190,14 +198,24 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
 
 
     private fun initUiColors(backgroundName: String) {
-        val colorPallete = genColorPallete(getImage(backgroundName, requireContext()))
-        getcolorsFromPallete(colorPallete)
-        setLargeCardViewColorFromPallete()
-        changeSystemBarColor()
-        changeAppbarColor()
-        changeRecyclerViewAdapterColor()
+        createPaletteAsync(getImage(backgroundName, requireContext()))
     }
 
+    private fun createPaletteAsync(bitmap: Bitmap) {
+        Palette.from(bitmap).generate {
+
+            it?.let {
+                getcolorsFromPallete(it)
+                setLargeCardViewColorFromPallete()
+                changeSystemBarColor()
+                changeAppbarColor()
+                changeRecyclerViewAdapterColor()
+            }
+            bitmap.recycle()
+        }
+
+
+    }
 
     private fun changeRecyclerViewAdapterColor() {
 
@@ -264,8 +282,9 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
     private fun getImage(imageName: String, context: Context): Bitmap {
         val drawableId =
             getResources().getIdentifier(imageName, "drawable", context.getPackageName())
-        val bitmap = BitmapFactory.decodeResource(resources, drawableId)
-        return bitmap
+        val options = BitmapFactory.Options()
+        options.inSampleSize = 15
+        return BitmapFactory.decodeResource(resources, drawableId, options)
     }
 
 
@@ -298,10 +317,6 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
 
     }
 
-
-    private fun genColorPallete(bitmap: Bitmap): Palette {
-        return createPaletteSync(bitmap)
-    }
 
     override fun setSnackBarMessageLiveDataObserver() {
         viewModel.MessageSnackBar.observe(this, Observer {
@@ -353,14 +368,22 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
 
     }
 
-
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        page_background?.clear()
+        page_background?.background = null
         onDestroyGlide()
     }
 
     override fun onClickItem(dt: Int) {
         val dayOfWeek = viewModel.getDayOfTimeStamp(mainTimeZone!!, dt)
         val oneDayForecast = categorizeForecastItems?.get(dayOfWeek)
+
+        val action = MainFragmentDirections.actionMainFragmentToDetailsFragment(
+            oneDayForecast?.toTypedArray()!!,
+            mainTimeZone!!, backgroundName, cityName
+        )
+        findNavController().navigate(action)
+
     }
 }

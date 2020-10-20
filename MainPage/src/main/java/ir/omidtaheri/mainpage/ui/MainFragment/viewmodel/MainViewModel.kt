@@ -13,7 +13,6 @@ import ir.omidtaheri.domain.interactor.GetCurrentByCoordinates
 import ir.omidtaheri.domain.interactor.GetForecastByCoordinates
 import ir.omidtaheri.domain.interactor.usecaseParam.GetCurrentByCoordinatesParams
 import ir.omidtaheri.domain.interactor.usecaseParam.GetForecastByCoordinatesParams
-import ir.omidtaheri.mainpage.entity.currentEntity.Main
 import ir.omidtaheri.mainpage.entity.currentEntity.currentWeatherUiEntity
 import ir.omidtaheri.mainpage.entity.forecastEntity.forecastList
 import ir.omidtaheri.mainpage.entity.forecastEntity.forecastWeatherUiEntity

@@ -98,7 +98,10 @@ class RecyclerViewAdapter(val callBack: RecyclerAdapterCallback) :
 
                     )
 
-                    callBack.onClickItem(forecastItem.dt)
+                    binding.root.setOnClickListener {
+                        callBack.onClickItem(forecastItem.dt)
+                    }
+
                 }
 
 
