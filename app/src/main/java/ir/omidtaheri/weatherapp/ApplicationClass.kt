@@ -25,11 +25,12 @@ class ApplicationClass : MultiDexApplication(), ApplicationComponentProvider {
         this.applicationComponent =
             DaggerApplicationComponent.builder()
                 .applicationModule(ApplicationModule(this))
-                .remoteModule(RemoteModule(BuildConfig.BASE_URL, BuildConfig.API_KEY))
+                .remoteModule(RemoteModule(BuildConfig.BASE_URL, BuildConfig.API_KEY,BuildConfig.MAPBOX_BASE_URL, BuildConfig.Mapbox_API_KEY))
                 .repositoryModule(RepositoryModule())
                 .build()
 
         applicationComponent.inject(this)
+
 
     }
 

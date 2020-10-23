@@ -49,7 +49,10 @@ android {
             isTestCoverageEnabled = BuildTypeRelease.isTestCoverageEnabled
             isShrinkResources = BuildTypeRelease.isMinifyEnabled
             buildConfigStringField("BASE_URL", "http://api.openweathermap.org/")
+            buildConfigStringField("MAPBOX_BASE_URL", "https://api.mapbox.com/geocoding/v5/mapbox.places/")
             buildConfigStringField("API_KEY", getLocalProperty("API.KEY"))
+            buildConfigStringField("Mapbox_API_KEY", getLocalProperty("mapbox.API.KEY"))
+
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -66,7 +69,10 @@ android {
             isTestCoverageEnabled = BuildTypeDebug.isTestCoverageEnabled
             isShrinkResources = BuildTypeDebug.isMinifyEnabled
             buildConfigStringField("BASE_URL", "http://api.openweathermap.org/")
+            buildConfigStringField("MAPBOX_BASE_URL", "https://api.mapbox.com/geocoding/v5/mapbox.places/")
             buildConfigStringField("API_KEY", getLocalProperty("API.KEY"))
+            buildConfigStringField("Mapbox_API_KEY", getLocalProperty("mapbox.API.KEY"))
+
         }
     }
 
