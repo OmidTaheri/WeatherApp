@@ -2,5 +2,5 @@
 <resources>
 
     <integer name="long_animation_duration">1500</integer>
-
+    <integer name="quick_animation_duration">500</integer>
 </resources>
