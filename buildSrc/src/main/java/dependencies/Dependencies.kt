@@ -69,5 +69,4 @@ object Dependencies {
 
     const val JodaTime =
         "joda-time:joda-time:${BuildDependenciesVersions.DependenciesVersions.JODATIME}"
-
 }
