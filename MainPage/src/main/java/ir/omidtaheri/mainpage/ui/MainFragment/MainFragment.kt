@@ -8,7 +8,12 @@ import android.os.Bundle
 import android.view.*
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
+import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -16,42 +21,57 @@ import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomappbar.BottomAppBar
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.chip.Chip
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import ir.omidtaheri.androidbase.BaseFragment
 import ir.omidtaheri.daggercore.di.utils.DaggerInjectUtils
 import ir.omidtaheri.mainpage.R
 import ir.omidtaheri.mainpage.databinding.MainFragmentBinding
 import ir.omidtaheri.mainpage.di.components.DaggerMainComponent
+import ir.omidtaheri.mainpage.entity.LocationEntity.LocationUiEntity
 import ir.omidtaheri.mainpage.entity.forecastEntity.Main
 import ir.omidtaheri.mainpage.entity.forecastEntity.Weather
 import ir.omidtaheri.mainpage.entity.forecastEntity.Wind
 import ir.omidtaheri.mainpage.entity.forecastEntity.forecastList
 import ir.omidtaheri.mainpage.ui.MainFragment.adapters.RecyclerViewAdapter
+import ir.omidtaheri.mainpage.ui.MainFragment.adapters.SearchLocationAdapter
 import ir.omidtaheri.mainpage.ui.MainFragment.viewmodel.MainViewModel
 import ir.omidtaheri.uibase.LoadBackgroungImage
 import ir.omidtaheri.uibase.clear
 import ir.omidtaheri.uibase.onDestroyGlide
 import ir.omidtaheri.viewcomponents.MultiStateLargeCardview.MultiStateLargeCardview
+import ir.omidtaheri.viewcomponents.MultiStatePage.MultiStatePage
+import kotlinx.android.synthetic.main.bottom_sheet_search_location.view.*
 
 
-class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback {
+class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback,
+    SearchLocationAdapter.Callback {
 
 
     private lateinit var viewModel: MainViewModel
-
-
     private lateinit var _viewbinding: MainFragmentBinding
 
     private val viewbinding
         get() = _viewbinding!!
 
 
-    lateinit var largeCardView: MultiStateLargeCardview
-    lateinit var recyclerView: RecyclerView
-    lateinit var fab: FloatingActionButton
-
+    private lateinit var largeCardView: MultiStateLargeCardview
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var fab: FloatingActionButton
+    private lateinit var sheetBehavior: BottomSheetBehavior<ConstraintLayout>
+    private lateinit var multiStatePage: MultiStatePage
+    private lateinit var searchbarContainer: TextInputLayout
+    private lateinit var searchBar: TextInputEditText
+    private lateinit var bottomSheet: ConstraintLayout
+    private lateinit var chip_location: Chip
+    private lateinit var bottomAppBar: BottomAppBar
+    private lateinit var page_background: View
+    private lateinit var bottom_sheet_close: ImageView
 
     var mainColorvibrant: Int? = null
     var mainColormuted: Int? = null
@@ -65,21 +85,45 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
     var mainTimeZone: Int? = null
     var currentDay: Int? = null
 
+
+    var lastLat: Double? = null
+    var lastLog: Double? = null
+    private lateinit var lastSearchLocationQuery: String
     lateinit var cityName: String
     lateinit var backgroundName: String
 
-    private lateinit var bottomAppBar: BottomAppBar
-    private lateinit var page_background: View
 
     var categorizeForecastItems: HashMap<Int, ArrayList<forecastList>>? = null
+    private lateinit var locationrecyclerAdapter: SearchLocationAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         super.onViewCreated(view, savedInstanceState)
-
+        BackpressHandler()
         initRecyclerViews()
         initUiColors("rs")
-        fetchData()
+        viewModel.setSearchSubjectObserver()
+        val savedLocation = viewModel.getLocation(requireContext())
+        currentLocationChipInit(viewModel.getLocationName(requireContext())!!)
+        lastLat = savedLocation.lat
+        lastLog = savedLocation.log
+        fetchData(lastLat!!, lastLog!!)
+    }
+
+    private fun BackpressHandler() {
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+
+                    if (getBottomSheetState()) {
+                        resetBootomSheet()
+                    } else {
+                        activity?.finish()
+                    }
+
+                }
+            })
     }
 
 
@@ -119,9 +163,9 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
         (recyclerView.adapter as RecyclerViewAdapter).addItems(loadingList, null)
     }
 
-    private fun fetchData() {
-        viewModel.getCurrentWeather(40.712776, -74.005974)
-        viewModel.getForecastWeather(40.712776, -74.005974)
+    private fun fetchData(lat: Double, log: Double) {
+        viewModel.getCurrentWeather(lat, log)
+        viewModel.getForecastWeather(lat, log)
     }
 
     override fun InflateViewBinding(inflater: LayoutInflater, container: ViewGroup?): View? {
@@ -138,7 +182,98 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
         largeCardView.toLoadingState()
         page_background = _viewbinding!!.pageBackground
         bottomAppBar = _viewbinding.bottomAppBar
+        bindUiComponentBootomSheet()
+        setFabClickListner()
+
     }
+
+    private fun setFabClickListner() {
+        fab.setOnClickListener {
+            if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+                sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            } else {
+                sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            }
+        }
+    }
+
+    private fun bindUiComponentBootomSheet() {
+        chip_location = _viewbinding.root.chip_location
+        bottomSheet = _viewbinding.root.bottom_sheet
+        searchBar = _viewbinding.root.searchbar
+        searchbarContainer = _viewbinding.root.searchbar_container
+        multiStatePage = _viewbinding.root.MultiStatePage
+        bottom_sheet_close = _viewbinding.root.closeButton
+
+        initBottomSheetRecyclerViews()
+        setBottomSheetCallback()
+        setSearchBarListners()
+    }
+
+    private fun setBottomSheetCallback() {
+        sheetBehavior = BottomSheetBehavior.from(bottomSheet)
+        sheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        fab.show()
+                    }
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        fab.hide()
+
+                    }
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        fab.hide()
+                    }
+                    BottomSheetBehavior.STATE_DRAGGING -> {
+
+                    }
+                    BottomSheetBehavior.STATE_SETTLING -> {
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+
+            }
+
+        })
+        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN)
+
+        bottom_sheet_close.setOnClickListener {
+            resetBootomSheet()
+        }
+    }
+
+
+    private fun currentLocationChipInit(LocationName: String) {
+        chip_location.text = LocationName
+    }
+
+
+    private fun initBottomSheetRecyclerViews() {
+        multiStatePage.apply {
+            locationrecyclerAdapter = SearchLocationAdapter(requireContext())
+            locationrecyclerAdapter.setCallback(this@MainFragment)
+
+            configRecyclerView(
+                locationrecyclerAdapter as RecyclerView.Adapter<RecyclerView.ViewHolder>,
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+            )
+            setCustomLayoutAnimation(R.anim.layout_animation_fall_down_quick)
+            toEmptyState()
+        }
+    }
+
+    private fun setSearchBarListners() {
+
+        searchBar.doOnTextChanged { text, start, before, count ->
+            lastSearchLocationQuery = text.toString()
+            viewModel.searchSubject.onNext(text.toString())
+        }
+
+    }
+
 
     override fun ConfigDaggerComponent() {
         DaggerMainComponent
@@ -158,6 +293,9 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
 
             mainTimeZone = it.timezone
             cityName = it.name
+
+            viewModel.saveLocationName(requireContext(), cityName)
+            currentLocationChipInit(cityName)
 
             largeCardView.toDateState(
                 it.name,
@@ -194,6 +332,23 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
             currentDay = it
         })
 
+
+        viewModel.LocationUiResultsLiveData.observe(this, Observer {
+
+            if (it == null || it.size == 0) {
+                multiStatePage.toEmptyState()
+            } else {
+                (multiStatePage.getRecyclerView().adapter as SearchLocationAdapter).addItems(it)
+                multiStatePage.toDateState()
+            }
+        })
+
+        viewModel.ErrorLocationResultsLiveData.observe(this, Observer {
+            multiStatePage.toErrorState(View.OnClickListener {
+                multiStatePage.toLoadingState()
+                viewModel.searchSubject.onNext(lastSearchLocationQuery)
+            })
+        })
     }
 
 
@@ -210,11 +365,19 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
                 changeSystemBarColor()
                 changeAppbarColor()
                 changeRecyclerViewAdapterColor()
+                changeBootomSheetBackground()
             }
             bitmap.recycle()
         }
 
 
+    }
+
+    private fun changeBootomSheetBackground() {
+        bottomSheet.setBackgroundColor(mainColordarkVibrant?.let {
+            mainColordarkVibrant!!
+        } ?: mainColordarkMuted!!
+        )
     }
 
     private fun changeRecyclerViewAdapterColor() {
@@ -349,6 +512,14 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
     }
 
     override fun showLoading(show: Boolean) {
+        multiStatePage.toLoadingState()
+        hideSoftKeyboard(searchBar)
+    }
+
+    fun hideSoftKeyboard(view: View) {
+        val imm =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.applicationWindowToken, 0)
     }
 
     override fun showSnackBar(message: String) {
@@ -356,7 +527,7 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
             .setAction(
                 "Retry"
             ) {
-                fetchData()
+                fetchData(lastLat!!, lastLog!!)
             }.show()
     }
 
@@ -386,4 +557,49 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
         findNavController().navigate(action)
 
     }
+
+    override fun onLocationItemClick(locationUiEntity: LocationUiEntity) {
+        resetBootomSheet()
+        initRecyclerViews()
+        largeCardView.toLoadingState()
+
+        lastLat = locationUiEntity.lat
+        lastLog = locationUiEntity.log
+        viewModel.saveLocation(requireContext(), lastLat!!, lastLog!!)
+        fetchData(locationUiEntity.lat, locationUiEntity.log)
+
+    }
+
+
+    private fun resetBootomSheet() {
+        sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN)
+        (multiStatePage.getRecyclerView().adapter as SearchLocationAdapter).clear()
+        multiStatePage.toEmptyState()
+        searchBar.setText("")
+        searchBar.clearFocus()
+        lastSearchLocationQuery = ""
+        hideSoftKeyboard(searchBar)
+    }
+
+    fun getBottomSheetState(): Boolean {
+        return when (sheetBehavior.state) {
+            BottomSheetBehavior.STATE_HIDDEN -> {
+                false
+            }
+            BottomSheetBehavior.STATE_EXPANDED -> {
+                true
+            }
+            BottomSheetBehavior.STATE_COLLAPSED -> {
+                true
+            }
+            BottomSheetBehavior.STATE_DRAGGING -> {
+                true
+            }
+            BottomSheetBehavior.STATE_SETTLING -> {
+                true
+            }
+            else -> false
+        }
+    }
 }
+

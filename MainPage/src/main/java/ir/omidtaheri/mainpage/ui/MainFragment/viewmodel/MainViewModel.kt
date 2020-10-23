@@ -1,9 +1,13 @@
 package ir.omidtaheri.mainpage.ui.MainFragment.viewmodel
 
 import android.app.Application
+import android.content.Context
+import android.content.Context.MODE_PRIVATE
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.subjects.PublishSubject
 import ir.omidtaheri.androidbase.BaseViewModel
 import ir.omidtaheri.androidbase.Utils.TimeUtils
 import ir.omidtaheri.domain.datastate.DataState
@@ -11,22 +15,32 @@ import ir.omidtaheri.domain.datastate.MessageHolder
 import ir.omidtaheri.domain.datastate.UiComponentType
 import ir.omidtaheri.domain.interactor.GetCurrentByCoordinates
 import ir.omidtaheri.domain.interactor.GetForecastByCoordinates
+import ir.omidtaheri.domain.interactor.SearchLocationByName
+import ir.omidtaheri.domain.interactor.base.Schedulers
 import ir.omidtaheri.domain.interactor.usecaseParam.GetCurrentByCoordinatesParams
 import ir.omidtaheri.domain.interactor.usecaseParam.GetForecastByCoordinatesParams
+import ir.omidtaheri.mainpage.entity.LocationEntity.LocationUiEntity
 import ir.omidtaheri.mainpage.entity.currentEntity.currentWeatherUiEntity
 import ir.omidtaheri.mainpage.entity.forecastEntity.forecastList
 import ir.omidtaheri.mainpage.entity.forecastEntity.forecastWeatherUiEntity
 import ir.omidtaheri.mainpage.mapper.CurrentWeatherEntityUiDomainMapper
 import ir.omidtaheri.mainpage.mapper.ForecastWeatherEntityUiDomainMapper
+import ir.omidtaheri.mainpage.mapper.LocationEntityUiDomainMapper
+import java.util.concurrent.TimeUnit
 
 class MainViewModel(
+    val schedulers: Schedulers,
     val getCurrentWeather: GetCurrentByCoordinates,
     val getForecast: GetForecastByCoordinates,
     val currentWeatherEntityUiDomainMapper: CurrentWeatherEntityUiDomainMapper,
     val forecastWeatherEntityUiDomainMapper: ForecastWeatherEntityUiDomainMapper,
+    val searchLocationByName: SearchLocationByName,
+    val locationEntityUiDomainMapper: LocationEntityUiDomainMapper,
     application: Application
 ) :
     BaseViewModel(application) {
+
+    val searchSubject: PublishSubject<String> = PublishSubject.create()
 
 
     private val _currentWeatherLiveData: MutableLiveData<currentWeatherUiEntity>
@@ -38,6 +52,16 @@ class MainViewModel(
         get() = _forecastWeatherLiveData
 
 
+    private val _LocationUiResultsLiveData: MutableLiveData<List<LocationUiEntity>>
+    val LocationUiResultsLiveData: LiveData<List<LocationUiEntity>>
+        get() = _LocationUiResultsLiveData
+
+
+    private val _ErrorLocationResultsLiveData: MutableLiveData<String>
+    val ErrorLocationResultsLiveData: LiveData<String>
+        get() = _ErrorLocationResultsLiveData
+
+
     private val _dayOfWeekLiveData: MutableLiveData<Int>
     val dayOfWeekLiveData: LiveData<Int>
         get() = _dayOfWeekLiveData
@@ -47,6 +71,8 @@ class MainViewModel(
         _currentWeatherLiveData = MutableLiveData()
         _forecastWeatherLiveData = MutableLiveData()
         _dayOfWeekLiveData = MutableLiveData()
+        _LocationUiResultsLiveData = MutableLiveData()
+        _ErrorLocationResultsLiveData = MutableLiveData()
     }
 
     fun getCurrentWeather(lat: Double, log: Double) {
@@ -67,7 +93,6 @@ class MainViewModel(
 
                         when (errorDataState.stateMessage?.uiComponentType) {
                             is UiComponentType.SNACKBAR -> {
-                                handleSnackBarError(errorDataState as DataState.ERROR<Any>)
                             }
 
                             is UiComponentType.TOAST -> {
@@ -100,7 +125,6 @@ class MainViewModel(
 
                 is DataState.ERROR -> {
                     response.let { errorDataState ->
-
                         when (errorDataState.stateMessage?.uiComponentType) {
                             is UiComponentType.SNACKBAR -> {
                                 handleSnackBarError(errorDataState as DataState.ERROR<Any>)
@@ -295,4 +319,82 @@ class MainViewModel(
         return result
     }
 
+
+    fun setSearchSubjectObserver() {
+
+
+        val disposable = searchSubject.debounce(1000, TimeUnit.MILLISECONDS)
+            .subscribeOn(schedulers.subscribeOn)
+            .filter {
+                !it.isEmpty()
+            }
+            .switchMapSingle {
+                _isLoading.postValue(true)
+
+                searchLocationByName.execute(it)
+            }
+            .observeOn(schedulers.observeOn)
+            .subscribeBy { response ->
+                when (response) {
+
+                    is DataState.SUCCESS -> {
+                        _LocationUiResultsLiveData.value =
+                            locationEntityUiDomainMapper.mapToUiEntity(response.data!!)
+                    }
+
+                    is DataState.ERROR -> {
+                        response.let { errorDataState ->
+
+                            when (errorDataState.stateMessage?.uiComponentType) {
+                                is UiComponentType.SNACKBAR -> {
+                                    handleSnackBarError(errorDataState as DataState.ERROR<Any>)
+                                }
+
+                                is UiComponentType.TOAST -> {
+                                    handleToastError(errorDataState as DataState.ERROR<Any>)
+                                }
+
+                                is UiComponentType.DIALOG -> {
+                                    _ErrorLocationResultsLiveData.value = "Place not found"
+                                }
+                            }
+                        }
+                    }
+                }
+
+            }
+
+        addDisposable(disposable)
+
+    }
+
+
+    fun saveLocation(context: Context, lat: Double, log: Double) {
+        val prefrence = context.getSharedPreferences("LocationSetting", MODE_PRIVATE)
+        val prefrenceEditor = prefrence.edit()
+        prefrenceEditor.putString("LocationLat", lat.toString())
+        prefrenceEditor.putString("LocationLog", log.toString())
+        prefrenceEditor.apply()
+    }
+
+    fun getLocation(context: Context): LocationUiEntity {
+        val prefrence = context.getSharedPreferences("LocationSetting", MODE_PRIVATE)
+        val LocationLat = prefrence.getString("LocationLat", "40.712776")
+        val LocationLog = prefrence.getString("LocationLog", " -74.005974")
+        return LocationUiEntity(LocationLat?.toDouble()!!, LocationLog?.toDouble()!!, "", "")
+    }
+
+    fun saveLocationName(context: Context, cityName: String) {
+        val prefrence = context.getSharedPreferences("LocationSetting", MODE_PRIVATE)
+        val prefrenceEditor = prefrence.edit()
+        prefrenceEditor.putString("cityName", cityName)
+        prefrenceEditor.apply()
+    }
+
+
+    fun getLocationName(context: Context): String? {
+        val prefrence = context.getSharedPreferences("LocationSetting", MODE_PRIVATE)
+        val LocationName = prefrence.getString("cityName", "")
+        return LocationName
+    }
 }
