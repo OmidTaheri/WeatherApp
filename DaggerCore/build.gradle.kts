@@ -70,7 +70,6 @@ dependencies {
 
     implementation(project(mapOf("path" to BuildModules.Data)))
     implementation(project(mapOf("path" to BuildModules.Domain)))
-    implementation(project(mapOf("path" to BuildModules.SharedPref)))
     implementation(project(mapOf("path" to BuildModules.Remote)))
 
     implementation(Dependencies.RX_ANDROID)
