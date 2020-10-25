@@ -19,3 +19,15 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-dontoptimize
+-keep class * extends androidx.fragment.app.Fragment{}
+-keepclasseswithmembers class ir.omidtaheri.mainpage.entity.forecastEntity.forecastList
+-keepnames class ir.omidtaheri.mainpage.entity.forecastEntity.forecastList
+
+-keepclasseswithmembers class ir.omidtaheri.remote.entity.**.*{ *; }
+-keepclasseswithmembers class ir.omidtaheri.domain.entity.**.*{ *; }
+-keepclasseswithmembers class ir.omidtaheri.data.entity.**.*{ *; }
+-keepclasseswithmembers class ir.omidtaheri.mainpage.entity.**.*{ *; }
+-keepclasseswithmembers class ir.omidtaheri.daggercore.**.*{ *; }
+-keepclasseswithmembers interface ir.omidtaheri.daggercore.**.*{ *; }
+-keepattributes *Annotation*, Signature, Exception
