@@ -41,6 +41,7 @@ import ir.omidtaheri.mainpage.entity.forecastEntity.forecastList
 import ir.omidtaheri.mainpage.ui.MainFragment.adapters.RecyclerViewAdapter
 import ir.omidtaheri.mainpage.ui.MainFragment.adapters.SearchLocationAdapter
 import ir.omidtaheri.mainpage.ui.MainFragment.viewmodel.MainViewModel
+import ir.omidtaheri.mainpage.widget.utils.AlarmManagerUtils
 import ir.omidtaheri.uibase.LoadBackgroungImage
 import ir.omidtaheri.uibase.clear
 import ir.omidtaheri.uibase.onDestroyGlide
@@ -567,7 +568,11 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
         lastLog = locationUiEntity.log
         viewModel.saveLocation(requireContext(), lastLat!!, lastLog!!)
         fetchData(locationUiEntity.lat, locationUiEntity.log)
+        setUpdateWidgetAlarm(requireContext())
+    }
 
+    fun setUpdateWidgetAlarm(context: Context) {
+        AlarmManagerUtils.startSingleAlarm(context)
     }
 
 

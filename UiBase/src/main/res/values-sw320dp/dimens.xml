@@ -3,6 +3,7 @@
     <dimen name="large_cart_viewe_item_width">150dp</dimen>
     <dimen name="large_cart_viewe_image_view_width">70dp</dimen>
     <dimen name="small_cart_viewe_item_width">70dp</dimen>
+    <dimen name="widget_margin">8dp</dimen>
     <!-- Layout -->
     <!-- Metrics & Keylines -->
     <!-- https://www.google.com/design/spec/layout/metrics-keylines.html#metrics-keylines-keylines-spacing -->

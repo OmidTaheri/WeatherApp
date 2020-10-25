@@ -23,6 +23,17 @@
 
         </activity>
 
+        <receiver android:name="ir.omidtaheri.mainpage.widget.WeatherAppWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="ir.omidtaheri.weatherapp.widget.update" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/weather_app_widget_info" />
+        </receiver>
+
     </application>
 
 </manifest>

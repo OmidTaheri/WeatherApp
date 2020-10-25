@@ -1,11 +1,9 @@
 package ir.omidtaheri.uibase
 
-import android.animation.Animator
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
@@ -44,6 +42,7 @@ fun View.LoadBackgroungImage(imageName: String, myConetxt: Context) {
                 }
             })
 }
+
 
 fun getImage(imageName: String, context: Context): Int {
     return context.getResources().getIdentifier(imageName, "drawable", context.getPackageName())
