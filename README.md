@@ -1,7 +1,7 @@
 <h1 align="center"> WeatherApp </h1>
 <br>
 <p align="center">
-    <img alt="WeatherApp" title="WeatherApp" src="ScreenShots/mainIcon.png" width="300">
+    <img alt="WeatherApp" title="WeatherApp" src="ScreenShots/mainIcon.jpg" width="300">
 </p>
 
 
@@ -16,11 +16,11 @@ WeatherApp is an application developed using modern Android development tools an
 #### `Screenshot` 
 
 <p align="center">
-  <img src = "ScreenShots/screenshot1.png" width=250>
-   <img src = "ScreenShots/screenshot2.png" width=250>
+  <img src = "ScreenShots/screenshot1.jpg" width=250>
+   <img src = "ScreenShots/screenshot2.jpg" width=250>
   <br>
-   <img src = "ScreenShots/screenshot3.png" width=250>
-   <img src = "ScreenShots/screenshot4.png" width=250>
+   <img src = "ScreenShots/screenshot3.jpg" width=250>
+   <img src = "ScreenShots/screenshot4.jpg" width=250>
   </p>
   
 
