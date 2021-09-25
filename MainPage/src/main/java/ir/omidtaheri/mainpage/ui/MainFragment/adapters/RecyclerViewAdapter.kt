@@ -7,12 +7,12 @@ import ir.omidtaheri.androidbase.BaseViewHolder
 import ir.omidtaheri.androidbase.Utils.TimeUtils
 import ir.omidtaheri.mainpage.R
 import ir.omidtaheri.mainpage.databinding.ForecastWeatherItemBinding
-import ir.omidtaheri.mainpage.entity.forecastEntity.forecastList
+import ir.omidtaheri.mainpage.entity.forecastEntity.ForecastList
 
 class RecyclerViewAdapter(val callBack: RecyclerAdapterCallback) :
     RecyclerView.Adapter<BaseViewHolder>() {
 
-    var items: MutableList<forecastList> = mutableListOf()
+    var items: MutableList<ForecastList> = mutableListOf()
 
     var titleColor: Int? = null
     var backgroundColor: Int? = null
@@ -43,20 +43,20 @@ class RecyclerViewAdapter(val callBack: RecyclerAdapterCallback) :
     }
 
     //    Helpers
-    fun addItem(item: forecastList, timeZone: Int?) {
+    fun addItem(item: ForecastList, timeZone: Int?) {
         this.timeZone = timeZone
         items.add(item)
         notifyItemInserted(items.size - 1)
     }
 
-    fun addItems(list: List<forecastList>, timeZone: Int?) {
+    fun addItems(list: List<ForecastList>, timeZone: Int?) {
         clear()
         this.timeZone = timeZone
         items.addAll(list)
         notifyDataSetChanged()
     }
 
-    fun remove(item: forecastList) {
+    fun remove(item: ForecastList) {
         val index = items.indexOf(item)
         if (index >= 0) {
             items.removeAt(index)
@@ -116,14 +116,14 @@ class RecyclerViewAdapter(val callBack: RecyclerAdapterCallback) :
 
         val loacalTime = TimeUtils.getDataTimeByMillis(timeStampMilis)
         val timeZone = TimeUtils.getTimeZoneFromOffsetSeconds(timezone)
-        val MainTime = TimeUtils.setTimeZoneToDateTime(loacalTime, timeZone)
-        return TimeUtils.dateTimeFormatter(MainTime, TimeUtils.getCommonPattern(1))
+        val mainTime = TimeUtils.setTimeZoneToDateTime(loacalTime, timeZone)
+        return TimeUtils.dateTimeFormatter(mainTime, TimeUtils.getCommonPattern(1))
     }
 
 
     fun setItemColor(colorList: List<Int>) {
-        this.titleColor = colorList.get(0)
-        this.backgroundColor = colorList.get(1)
+        this.titleColor = colorList[0]
+        this.backgroundColor = colorList[1]
         notifyDataSetChanged()
     }
 
