@@ -4,13 +4,13 @@ package ir.omidtaheri.remote.mapper
 import ir.omidtaheri.data.entity.searchLoacation.searchLocationDataEntity
 import ir.omidtaheri.remote.entity.response.searchLoacation.Feature
 import ir.omidtaheri.remote.entity.response.searchLoacation.Geometry
-import ir.omidtaheri.remote.entity.response.searchLoacation.searchLocationResponse
+import ir.omidtaheri.remote.entity.response.searchLoacation.SearchLocationResponse
 import javax.inject.Inject
 
 class SearchLocationResponseToDataEntityMapper @Inject constructor() :
-    ResponseToDataEntityMapper<searchLocationResponse, searchLocationDataEntity> {
+    ResponseToDataEntityMapper<SearchLocationResponse, searchLocationDataEntity> {
 
-    override fun mapFromDTO(from: searchLocationResponse): searchLocationDataEntity {
+    override fun mapFromDTO(from: SearchLocationResponse): searchLocationDataEntity {
 
         return searchLocationDataEntity(mapFromFeatureListDTO(from.features))
     }

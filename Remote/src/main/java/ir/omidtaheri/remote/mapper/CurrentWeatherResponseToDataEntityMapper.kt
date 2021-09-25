@@ -5,8 +5,8 @@ import ir.omidtaheri.remote.entity.response.currentWeather.*
 import javax.inject.Inject
 
 class CurrentWeatherResponseToDataEntityMapper @Inject constructor() :
-    ResponseToDataEntityMapper<currentWeatherResponse, currentWeatherDataEntity> {
-    override fun mapFromDTO(from: currentWeatherResponse): currentWeatherDataEntity {
+    ResponseToDataEntityMapper<CurrentWeatherResponse, currentWeatherDataEntity> {
+    override fun mapFromDTO(from: CurrentWeatherResponse): currentWeatherDataEntity {
 
         return currentWeatherDataEntity(
             mapFromCoordDTO(from.coord),

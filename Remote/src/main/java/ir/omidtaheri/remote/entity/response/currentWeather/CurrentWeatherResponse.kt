@@ -1,6 +1,6 @@
 package ir.omidtaheri.remote.entity.response.currentWeather
 
-data class currentWeatherResponse(
+data class CurrentWeatherResponse(
     val base: String,
     val clouds: Clouds,
     val cod: Int,

@@ -6,14 +6,14 @@ import ir.omidtaheri.remote.entity.response.forecastWeather.Main
 import ir.omidtaheri.remote.entity.response.forecastWeather.Weather
 import ir.omidtaheri.remote.entity.response.forecastWeather.Wind
 import ir.omidtaheri.remote.entity.response.forecastWeather.City
-import ir.omidtaheri.remote.entity.response.forecastWeather.forecastList
-import ir.omidtaheri.remote.entity.response.forecastWeather.forecastWeatherResponse
+import ir.omidtaheri.remote.entity.response.forecastWeather.ForecastList
+import ir.omidtaheri.remote.entity.response.forecastWeather.ForecastWeatherResponse
 import javax.inject.Inject
 
 class ForecastWeatherResponseToDataEntityMapper @Inject constructor() :
-    ResponseToDataEntityMapper<forecastWeatherResponse, forecastWeatherDataEntity> {
+    ResponseToDataEntityMapper<ForecastWeatherResponse, forecastWeatherDataEntity> {
 
-    override fun mapFromDTO(from: forecastWeatherResponse): forecastWeatherDataEntity {
+    override fun mapFromDTO(from: ForecastWeatherResponse): forecastWeatherDataEntity {
 
         return forecastWeatherDataEntity(
             mapFromCityDTO(from.city),
@@ -32,7 +32,7 @@ class ForecastWeatherResponseToDataEntityMapper @Inject constructor() :
         return ir.omidtaheri.data.entity.forecastEntity.Coord(coord.lat, coord.lon)
     }
 
-    fun mapFromForecastListDTO(forecastList: List<forecastList>): List<ir.omidtaheri.data.entity.forecastEntity.forecastList> {
+    fun mapFromForecastListDTO(forecastList: List<ForecastList>): List<ir.omidtaheri.data.entity.forecastEntity.forecastList> {
 
         return forecastList.map {
             ir.omidtaheri.data.entity.forecastEntity.forecastList(

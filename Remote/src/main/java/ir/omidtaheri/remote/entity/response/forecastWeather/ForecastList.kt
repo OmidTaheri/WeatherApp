@@ -1,6 +1,6 @@
 package ir.omidtaheri.remote.entity.response.forecastWeather
 
-data class forecastList(
+data class ForecastList(
     val clouds: Clouds,
     val dt: Int,
     val dt_txt: String,
