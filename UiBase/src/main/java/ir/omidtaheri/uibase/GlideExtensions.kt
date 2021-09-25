@@ -45,7 +45,7 @@ fun View.LoadBackgroungImage(imageName: String, myConetxt: Context) {
 
 
 fun getImage(imageName: String, context: Context): Int {
-    return context.getResources().getIdentifier(imageName, "drawable", context.getPackageName())
+    return context.resources.getIdentifier(imageName, "drawable", context.packageName)
 }
 
 fun View.clear() {
