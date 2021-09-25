@@ -1,17 +1,18 @@
 package ir.omidtaheri.mainpage.ui.DetailFragment.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.SavedStateHandle
+import ir.omidtaheri.androidbase.viewmodelutils.ViewModelAssistedFactory
 import javax.inject.Inject
 
 class DetailsViewModelFactory @Inject constructor(
-
-    val application: Application
-) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    private val application: Application
+) : ViewModelAssistedFactory<DetailsViewModel> {
+    override fun create(handle: SavedStateHandle): DetailsViewModel {
         return DetailsViewModel(
+            handle,
             application
-        ) as T
+        )
     }
+
 }

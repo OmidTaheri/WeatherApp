@@ -1,16 +1,17 @@
 package ir.omidtaheri.mainpage.ui.DetailFragment.viewmodel
 
 import android.app.Application
-import ir.omidtaheri.androidbase.BaseViewModel
+import androidx.lifecycle.SavedStateHandle
+import ir.omidtaheri.androidbase.BaseAndroidViewModel
 import ir.omidtaheri.androidbase.Utils.TimeUtils
 import ir.omidtaheri.domain.datastate.DataState
 import ir.omidtaheri.domain.datastate.MessageHolder
 
 class DetailsViewModel(
-    application: Application
+    private val state: SavedStateHandle,
+    private val mApplication: Application
 ) :
-    BaseViewModel(application) {
-
+    BaseAndroidViewModel(mApplication, state) {
 
     private fun handleSnackBarError(errorDataState: DataState.ERROR<Any>) {
         errorDataState.stateMessage!!.message.let { messageHolder ->
@@ -18,11 +19,11 @@ class DetailsViewModel(
             when (messageHolder) {
 
                 is MessageHolder.MESSAGE -> {
-                    _ErrorSnackBar.value = messageHolder.message
+                    _errorSnackBar.value = messageHolder.message
                 }
 
-                is MessageHolder.Res -> _ErrorSnackBar.value =
-                    ApplicationClass.getString(
+                is MessageHolder.Res -> _errorSnackBar.value =
+                    mApplication.applicationContext.getString(
                         messageHolder.resId
                     )
             }
@@ -33,10 +34,10 @@ class DetailsViewModel(
         errorDataState.stateMessage!!.message.let { messageHolder ->
 
             when (messageHolder) {
-                is MessageHolder.MESSAGE -> _ErrorToast.value =
+                is MessageHolder.MESSAGE -> _errorToast.value =
                     messageHolder.message
-                is MessageHolder.Res -> _ErrorToast.value =
-                    ApplicationClass.getString(
+                is MessageHolder.Res -> _errorToast.value =
+                    mApplication.applicationContext.getString(
                         messageHolder.resId
                     )
             }
@@ -50,8 +51,8 @@ class DetailsViewModel(
 
         val loacalTime = TimeUtils.getDataTimeByMillis(timeStampMilis)
         val timeZone = TimeUtils.getTimeZoneFromOffsetSeconds(timezone)
-        val MainTime = TimeUtils.setTimeZoneToDateTime(loacalTime, timeZone)
-        return TimeUtils.dateTimeFormatter(MainTime, TimeUtils.getCommonPattern(8))
+        val mainTime = TimeUtils.setTimeZoneToDateTime(loacalTime, timeZone)
+        return TimeUtils.dateTimeFormatter(mainTime, TimeUtils.getCommonPattern(8))
     }
 
 
