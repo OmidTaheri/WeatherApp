@@ -9,13 +9,13 @@ import ir.omidtaheri.domain.gateway.LocationGateWay
 import javax.inject.Inject
 
 class LocationRepository @Inject constructor(
-    val searchLocationRemoteDataSourceInterface: SearchLocationRemoteDataSourceInterface,
-    val locationEntityDomainDataMapper: LocationEntityDomainDataMapper
+    private val searchLocationRemoteDataSourceInterface: SearchLocationRemoteDataSourceInterface,
+    private val locationEntityDomainDataMapper: LocationEntityDomainDataMapper
 ) : LocationGateWay {
 
     override fun SearchLocationByName(city_name: String): Single<DataState<searchLocationDomainEntity>> {
 
-        return searchLocationRemoteDataSourceInterface.SearchLocationByName(
+        return searchLocationRemoteDataSourceInterface.searchLocationByName(
             city_name
         ).map<DataState<searchLocationDomainEntity>> {
 

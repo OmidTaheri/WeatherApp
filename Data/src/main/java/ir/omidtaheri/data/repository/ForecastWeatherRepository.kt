@@ -9,8 +9,8 @@ import ir.omidtaheri.domain.gateway.ForecastWeatherGateWay
 import javax.inject.Inject
 
 class ForecastWeatherRepository @Inject constructor(
-    val forecastWeatherRemoteDataSource: ForecastWeatherRemoteDataSourceInterface,
-    val forecastEntityDomainDataMapper: ForecastEntityDomainDataMapper
+    private val forecastWeatherRemoteDataSource: ForecastWeatherRemoteDataSourceInterface,
+    private val forecastEntityDomainDataMapper: ForecastEntityDomainDataMapper
 
 ) : ForecastWeatherGateWay {
 
@@ -21,7 +21,7 @@ class ForecastWeatherRepository @Inject constructor(
     ): Single<DataState<forecastWeatherDomainEntity>> {
 
 
-        return forecastWeatherRemoteDataSource.ForecastWeatherByName(
+        return forecastWeatherRemoteDataSource.forecastWeatherByName(
             name,
             units,
             cnt
@@ -50,7 +50,7 @@ class ForecastWeatherRepository @Inject constructor(
         cnt: Int?
     ): Single<DataState<forecastWeatherDomainEntity>> {
 
-        return forecastWeatherRemoteDataSource.ForecastWeatherByCoordinates(
+        return forecastWeatherRemoteDataSource.forecastWeatherByCoordinates(
             lat,
             lon,
             units,

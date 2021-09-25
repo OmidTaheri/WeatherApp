@@ -9,8 +9,8 @@ import ir.omidtaheri.domain.gateway.CurrentWeatherGateWay
 import javax.inject.Inject
 
 class CurrentWeatherRepository @Inject constructor(
-    val currentWeatherRemoteDataSource: CurrentWeatherRemoteDataSourceInterface,
-    val currentEntityMapper: CurrentEntityDomainDataMapper
+    private val currentWeatherRemoteDataSource: CurrentWeatherRemoteDataSourceInterface,
+    private val currentEntityMapper: CurrentEntityDomainDataMapper
 ) : CurrentWeatherGateWay {
 
 

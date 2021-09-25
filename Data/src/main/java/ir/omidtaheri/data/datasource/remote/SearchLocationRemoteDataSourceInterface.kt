@@ -6,7 +6,7 @@ import ir.omidtaheri.data.entity.searchLoacation.searchLocationDataEntity
 interface SearchLocationRemoteDataSourceInterface {
 
 
-    fun SearchLocationByName(
+    fun searchLocationByName(
         city_name: String
     ): Single<searchLocationDataEntity>
 

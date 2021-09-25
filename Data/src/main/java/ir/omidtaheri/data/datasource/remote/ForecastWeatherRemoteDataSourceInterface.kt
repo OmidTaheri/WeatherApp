@@ -6,14 +6,14 @@ import ir.omidtaheri.data.entity.forecastEntity.forecastWeatherDataEntity
 interface ForecastWeatherRemoteDataSourceInterface {
 
 
-    fun ForecastWeatherByName(
+    fun forecastWeatherByName(
         name: String,
         units: String?,
         cnt: Int?
     ): Single<forecastWeatherDataEntity>
 
 
-    fun ForecastWeatherByCoordinates(
+    fun forecastWeatherByCoordinates(
         lat: Double,
         lon: Double,
         units: String?,
