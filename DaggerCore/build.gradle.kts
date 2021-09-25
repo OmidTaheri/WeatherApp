@@ -1,7 +1,6 @@
 import dependencies.AnnotationProcessorsDependencies
 import dependencies.DebugDependencies
 import dependencies.Dependencies
-import dependencies.JetpackDependencies
 import dependencies.UiDependencies
 import extentions.addTestsDependencies
 import extentions.implementation
