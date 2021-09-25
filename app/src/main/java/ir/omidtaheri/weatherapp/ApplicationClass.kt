@@ -5,9 +5,6 @@ import com.facebook.stetho.Stetho
 import ir.omidtaheri.daggercore.di.ApplicationComponentProvider
 import ir.omidtaheri.daggercore.di.components.ApplicationComponent
 import ir.omidtaheri.daggercore.di.components.DaggerApplicationComponent
-import ir.omidtaheri.daggercore.di.modules.ApplicationModule
-import ir.omidtaheri.daggercore.di.modules.RemoteModule
-import ir.omidtaheri.daggercore.di.modules.RepositoryModule
 
 
 class ApplicationClass : MultiDexApplication(), ApplicationComponentProvider {
@@ -23,11 +20,13 @@ class ApplicationClass : MultiDexApplication(), ApplicationComponentProvider {
         }
 
         this.applicationComponent =
-            DaggerApplicationComponent.builder()
-                .applicationModule(ApplicationModule(this))
-                .remoteModule(RemoteModule(BuildConfig.BASE_URL, BuildConfig.API_KEY,BuildConfig.MAPBOX_BASE_URL, BuildConfig.Mapbox_API_KEY))
-                .repositoryModule(RepositoryModule())
-                .build()
+            DaggerApplicationComponent.factory().create(
+                this,
+                BuildConfig.MAPBOX_BASE_URL,
+                BuildConfig.BASE_URL,
+                BuildConfig.Mapbox_API_KEY,
+                BuildConfig.API_KEY
+            )
 
         applicationComponent.inject(this)
 
