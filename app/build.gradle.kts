@@ -96,9 +96,9 @@ android {
     }
 
     lintOptions {
-        setCheckDependencies(true)
-        setHtmlReport(true)
-        setHtmlOutput(file("${project.rootDir}/build/reports/lint/lint_report_${BuildAndroidConfig.VERSION_NAME}.html"))
+        isCheckDependencies = true
+        htmlReport = true
+        htmlOutput = file("${project.rootDir}/build/reports/lint/lint_report_${BuildAndroidConfig.VERSION_NAME}.html")
     }
 }
 
