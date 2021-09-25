@@ -9,19 +9,20 @@ import android.view.*
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
 import ir.omidtaheri.androidbase.BaseFragment
+import ir.omidtaheri.androidbase.viewmodelutils.GenericSavedStateViewModelFactory
 import ir.omidtaheri.daggercore.di.utils.DaggerInjectUtils
 import ir.omidtaheri.mainpage.R
 import ir.omidtaheri.mainpage.databinding.DetailsFragmentBinding
 import ir.omidtaheri.mainpage.di.components.DaggerDetailsComponent
-import ir.omidtaheri.mainpage.entity.forecastEntity.forecastList
+import ir.omidtaheri.mainpage.entity.forecastEntity.ForecastList
 import ir.omidtaheri.mainpage.ui.DetailFragment.adapters.ForecastDetailsAdapter
 import ir.omidtaheri.mainpage.ui.DetailFragment.viewmodel.DetailsViewModel
 import ir.omidtaheri.uibase.LoadBackgroungImage
@@ -30,41 +31,35 @@ import ir.omidtaheri.uibase.onDestroyGlide
 import ir.omidtaheri.viewcomponents.MultiStateLargeCardview.MultiStateLargeCardview
 
 
-class DetailsFragment : BaseFragment() {
+class DetailsFragment : BaseFragment<DetailsViewModel>() {
 
 
-    private lateinit var viewModel: DetailsViewModel
+    private var viewBinding: DetailsFragmentBinding? = null
+    private lateinit var largeCardView: MultiStateLargeCardview
+    private lateinit var recyclerView: RecyclerView
+
+    private var mainColorvibrant: Int? = null
+    private var mainColormuted: Int? = null
+
+    private var mainColordarkVibrant: Int? = null
+    private var mainColordarkMuted: Int? = null
+
+    private var mainColorlightVibrant: Int? = null
+    private var mainColorlightMuted: Int? = null
 
 
-    private lateinit var _viewbinding: DetailsFragmentBinding
+    private lateinit var pageBackground: View
+    private lateinit var args: DetailsFragmentArgs
+    private lateinit var mainForecastItem: ForecastList
+    private lateinit var forecastList: List<ForecastList>
+    private lateinit var cityName: String
+    private lateinit var backgroundName: String
+    private var mainTimeZone: Int? = null
 
-    private val viewbinding
-        get() = _viewbinding!!
+    private val viewModel: DetailsViewModel by viewModels {
+        GenericSavedStateViewModelFactory(viewModelFactory, this)
+    }
 
-
-    lateinit var largeCardView: MultiStateLargeCardview
-    lateinit var recyclerView: RecyclerView
-
-
-    var mainColorvibrant: Int? = null
-    var mainColormuted: Int? = null
-
-    var mainColordarkVibrant: Int? = null
-    var mainColordarkMuted: Int? = null
-
-    var mainColorlightVibrant: Int? = null
-    var mainColorlightMuted: Int? = null
-
-
-    private lateinit var page_background: View
-    lateinit var args: DetailsFragmentArgs
-
-
-    lateinit var mainForecastItem: forecastList
-    lateinit var forecastList: List<forecastList>
-    lateinit var cityName: String
-    lateinit var backgroundName: String
-    var mainTimeZone: Int? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
@@ -80,7 +75,6 @@ class DetailsFragment : BaseFragment() {
         mainForecastItem = forecastList[0]
         initRecyclerViews()
         initMainCardview()
-        //////initUiColors(backgroundName)
 
     }
 
@@ -95,7 +89,7 @@ class DetailsFragment : BaseFragment() {
 
         val animation: LayoutAnimationController =
             AnimationUtils.loadLayoutAnimation(
-                viewbinding.recyclerView.context,
+                viewBinding!!.recyclerView.context,
                 R.anim.layout_animation_fall_down
             )
 
@@ -112,27 +106,26 @@ class DetailsFragment : BaseFragment() {
     }
 
 
-    override fun InflateViewBinding(inflater: LayoutInflater, container: ViewGroup?): View? {
-        _viewbinding = DetailsFragmentBinding.inflate(inflater, container, false)
-        val view = viewbinding.root
-        return view
+    override fun inflateViewBinding(inflater: LayoutInflater, container: ViewGroup?): View? {
+        viewBinding = DetailsFragmentBinding.inflate(inflater, container, false)
+        return viewBinding!!.root
     }
 
     override fun bindUiComponent() {
 
-        largeCardView = _viewbinding!!.largeCardView
-        recyclerView = _viewbinding!!.recyclerView
+        largeCardView = viewBinding!!.largeCardView
+        recyclerView = viewBinding!!.recyclerView
 
         largeCardView.toLoadingState()
-        page_background = _viewbinding!!.pageBackground
+        pageBackground = viewBinding!!.pageBackground
 
     }
 
-    override fun setDataLiveObserver() {
+    override fun setLiveDataObserver() {
 
     }
 
-    override fun ConfigDaggerComponent() {
+    override fun configDaggerComponent() {
         DaggerDetailsComponent
             .builder()
             .applicationComponent(DaggerInjectUtils.provideApplicationComponent(requireContext().applicationContext))
@@ -140,12 +133,8 @@ class DetailsFragment : BaseFragment() {
             .inject(this)
     }
 
-    override fun SetViewModel() {
-        viewModel = ViewModelProvider(this, viewModelFactory).get(DetailsViewModel::class.java)
-    }
 
     private fun initMainCardview() {
-
 
         largeCardView.toDateState(
             cityName,
@@ -167,7 +156,7 @@ class DetailsFragment : BaseFragment() {
                 mainForecastItem.weather.get(0).icon
             )
 
-        page_background.LoadBackgroungImage(backgroundName, requireContext())
+        pageBackground.LoadBackgroungImage(backgroundName, requireContext())
         initUiColors(backgroundName)
 
     }
@@ -257,7 +246,7 @@ class DetailsFragment : BaseFragment() {
 
     private fun getImage(imageName: String, context: Context): Bitmap {
         val drawableId =
-            getResources().getIdentifier(imageName, "drawable", context.getPackageName())
+            resources.getIdentifier(imageName, "drawable", context.packageName)
         val options = BitmapFactory.Options()
         options.inSampleSize = 15
         return BitmapFactory.decodeResource(resources, drawableId, options)
@@ -272,8 +261,8 @@ class DetailsFragment : BaseFragment() {
 
 
         mainColordarkVibrant?.let {
-            window.setStatusBarColor(mainColordarkVibrant!!)
-            window.setNavigationBarColor(mainColordarkVibrant!!)
+            window.statusBarColor = mainColordarkVibrant!!
+            window.navigationBarColor = mainColordarkVibrant!!
         } ?: changeSystemBarColorByOtherColor()
 
 
@@ -286,25 +275,25 @@ class DetailsFragment : BaseFragment() {
     }
 
     override fun setSnackBarMessageLiveDataObserver() {
-        viewModel.MessageSnackBar.observe(this, Observer {
+        viewModel.messageSnackBar.observe(this, Observer {
             showSnackBar(it)
         })
     }
 
     override fun setToastMessageLiveDataObserver() {
-        viewModel.MessageToast.observe(this, Observer {
+        viewModel.messageToast.observe(this, Observer {
             showToast(it)
         })
     }
 
     override fun setSnackBarErrorLivaDataObserver() {
-        viewModel.ErrorSnackBar.observe(this, Observer {
+        viewModel.errorSnackBar.observe(this, Observer {
             showSnackBar(it)
         })
     }
 
     override fun setToastErrorLiveDataObserver() {
-        viewModel.ErrorToast.observe(this, Observer {
+        viewModel.errorToast.observe(this, Observer {
             showToast(it)
         })
     }
@@ -319,7 +308,7 @@ class DetailsFragment : BaseFragment() {
     }
 
     override fun showSnackBar(message: String) {
-        Snackbar.make(viewbinding.root, message, BaseTransientBottomBar.LENGTH_INDEFINITE)
+        Snackbar.make(viewBinding!!.root, message, BaseTransientBottomBar.LENGTH_INDEFINITE)
             .show()
     }
 
@@ -334,8 +323,9 @@ class DetailsFragment : BaseFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        page_background?.clear()
-        page_background?.background = null
+        pageBackground?.clear()
+        pageBackground?.background = null
+        viewBinding = null
         onDestroyGlide()
     }
 
