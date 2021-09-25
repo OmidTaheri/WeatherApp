@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class GetCurrentByCoordinates @Inject constructor(
     schedulers: Schedulers,
-    val currentWeatherRepository: CurrentWeatherGateWay
+    private val currentWeatherRepository: CurrentWeatherGateWay
 ) :
     SingleUseCase<GetCurrentByCoordinatesParams, DataState<currentWeatherDomainEntity>>(schedulers) {
 

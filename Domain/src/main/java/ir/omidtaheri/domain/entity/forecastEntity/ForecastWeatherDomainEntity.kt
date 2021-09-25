@@ -1,6 +1,6 @@
 package ir.omidtaheri.domain.entity.forecastEntity
 
-data class forecastWeatherDomainEntity(
+data class ForecastWeatherDomainEntity(
     val city: City,
-    val list: List<forecastList>
+    val list: List<ForecastList>
 )

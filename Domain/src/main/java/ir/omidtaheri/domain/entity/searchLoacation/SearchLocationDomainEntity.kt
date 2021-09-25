@@ -1,6 +1,6 @@
 package ir.omidtaheri.domain.entity.searchLoacation
 
 
-data class searchLocationDomainEntity(
+data class SearchLocationDomainEntity(
     val features: List<Feature>
 )

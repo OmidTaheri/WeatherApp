@@ -1,7 +1,7 @@
 package ir.omidtaheri.domain.entity.forecastEntity
 
 
-data class forecastList(
+data class ForecastList(
 
     val dt: Int,
     val dt_txt: String,

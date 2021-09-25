@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class GetCurrentByName @Inject constructor(
     schedulers: Schedulers,
-    val currentWeatherRepository: CurrentWeatherGateWay
+    private val currentWeatherRepository: CurrentWeatherGateWay
 ) :
     SingleUseCase<GetCurrentByNameParams, DataState<currentWeatherDomainEntity>>(schedulers) {
 
