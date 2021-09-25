@@ -5,19 +5,18 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 
 abstract class BaseActivity : AppCompatActivity() {
 
-    private val mActivityComponent: Any = TODO()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
+    abstract fun inflateViewBinding(inflater: LayoutInflater): View?
 
     @TargetApi(Build.VERSION_CODES.M)
     fun requestPermissionsSafely(
@@ -40,12 +39,8 @@ abstract class BaseActivity : AppCompatActivity() {
         if (view != null) {
             val imm: InputMethodManager =
                 getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0)
+            imm.hideSoftInputFromWindow(view.windowToken, 0)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     abstract fun setUp()
