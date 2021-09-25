@@ -4,7 +4,7 @@ import io.reactivex.Single
 import ir.omidtaheri.data.datasource.remote.ForecastWeatherRemoteDataSourceInterface
 import ir.omidtaheri.data.mapper.ForecastEntityDomainDataMapper
 import ir.omidtaheri.domain.datastate.*
-import ir.omidtaheri.domain.entity.forecastEntity.forecastWeatherDomainEntity
+import ir.omidtaheri.domain.entity.forecastEntity.ForecastWeatherDomainEntity
 import ir.omidtaheri.domain.gateway.ForecastWeatherGateWay
 import javax.inject.Inject
 
@@ -14,18 +14,18 @@ class ForecastWeatherRepository @Inject constructor(
 
 ) : ForecastWeatherGateWay {
 
-    override fun ForecastWeatherByName(
+    override fun forecastWeatherByName(
         name: String,
         units: String?,
         cnt: Int?
-    ): Single<DataState<forecastWeatherDomainEntity>> {
+    ): Single<DataState<ForecastWeatherDomainEntity>> {
 
 
         return forecastWeatherRemoteDataSource.forecastWeatherByName(
             name,
             units,
             cnt
-        ).map<DataState<forecastWeatherDomainEntity>> {
+        ).map<DataState<ForecastWeatherDomainEntity>> {
 
             DataState.SUCCESS(
                 forecastEntityDomainDataMapper.mapFromDataEntity(it),
@@ -43,19 +43,19 @@ class ForecastWeatherRepository @Inject constructor(
 
     }
 
-    override fun ForecastWeatherByCoordinates(
+    override fun forecastWeatherByCoordinates(
         lat: Double,
         lon: Double,
         units: String?,
         cnt: Int?
-    ): Single<DataState<forecastWeatherDomainEntity>> {
+    ): Single<DataState<ForecastWeatherDomainEntity>> {
 
         return forecastWeatherRemoteDataSource.forecastWeatherByCoordinates(
             lat,
             lon,
             units,
             cnt
-        ).map<DataState<forecastWeatherDomainEntity>> {
+        ).map<DataState<ForecastWeatherDomainEntity>> {
 
             DataState.SUCCESS(
                 forecastEntityDomainDataMapper.mapFromDataEntity(it),

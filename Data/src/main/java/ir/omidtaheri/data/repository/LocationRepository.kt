@@ -4,7 +4,7 @@ import io.reactivex.Single
 import ir.omidtaheri.data.datasource.remote.SearchLocationRemoteDataSourceInterface
 import ir.omidtaheri.data.mapper.LocationEntityDomainDataMapper
 import ir.omidtaheri.domain.datastate.*
-import ir.omidtaheri.domain.entity.searchLoacation.searchLocationDomainEntity
+import ir.omidtaheri.domain.entity.searchLoacation.SearchLocationDomainEntity
 import ir.omidtaheri.domain.gateway.LocationGateWay
 import javax.inject.Inject
 
@@ -13,11 +13,11 @@ class LocationRepository @Inject constructor(
     private val locationEntityDomainDataMapper: LocationEntityDomainDataMapper
 ) : LocationGateWay {
 
-    override fun SearchLocationByName(city_name: String): Single<DataState<searchLocationDomainEntity>> {
+    override fun searchLocationByName(city_name: String): Single<DataState<SearchLocationDomainEntity>> {
 
         return searchLocationRemoteDataSourceInterface.searchLocationByName(
             city_name
-        ).map<DataState<searchLocationDomainEntity>> {
+        ).map<DataState<SearchLocationDomainEntity>> {
 
             DataState.SUCCESS(
                 locationEntityDomainDataMapper.mapFromDataEntity(it),
