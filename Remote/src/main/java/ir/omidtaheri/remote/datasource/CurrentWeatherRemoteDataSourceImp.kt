@@ -8,8 +8,8 @@ import ir.omidtaheri.remote.service.WeatherApi
 import javax.inject.Inject
 
 class CurrentWeatherRemoteDataSourceImp @Inject constructor(
-    val weatherApi: WeatherApi,
-    val currentWeatherResponseDtoMapper: CurrentWeatherResponseToDataEntityMapper
+    private val weatherApi: WeatherApi,
+    private val currentWeatherResponseDtoMapper: CurrentWeatherResponseToDataEntityMapper
 ) :
     CurrentWeatherRemoteDataSourceInterface {
 

@@ -8,12 +8,12 @@ import ir.omidtaheri.remote.service.WeatherApi
 import javax.inject.Inject
 
 class ForecastWeatherRemoteDataSourceImp @Inject constructor(
-    val weatherApi: WeatherApi,
-    val forecastWeatherResponseDtoMapper: ForecastWeatherResponseToDataEntityMapper
+    private val weatherApi: WeatherApi,
+    private val forecastWeatherResponseDtoMapper: ForecastWeatherResponseToDataEntityMapper
 ) :
     ForecastWeatherRemoteDataSourceInterface {
 
-    override fun ForecastWeatherByName(
+    override fun forecastWeatherByName(
         name: String,
         units: String?,
         cnt: Int?
@@ -27,7 +27,7 @@ class ForecastWeatherRemoteDataSourceImp @Inject constructor(
         }
     }
 
-    override fun ForecastWeatherByCoordinates(
+    override fun forecastWeatherByCoordinates(
         lat: Double,
         lon: Double,
         units: String?,

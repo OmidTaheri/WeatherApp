@@ -8,11 +8,11 @@ import ir.omidtaheri.remote.service.MapboxApi
 import javax.inject.Inject
 
 class SearchLocationRemoteDataSourceImp @Inject constructor(
-    val mapboxApi: MapboxApi,
-    val searchLocationResponseDataoMapper: SearchLocationResponseToDataEntityMapper
+    private val mapboxApi: MapboxApi,
+    private val searchLocationResponseDataoMapper: SearchLocationResponseToDataEntityMapper
 ) :
     SearchLocationRemoteDataSourceInterface {
-    override fun SearchLocationByName(city_name: String): Single<searchLocationDataEntity> {
+    override fun searchLocationByName(city_name: String): Single<searchLocationDataEntity> {
         return mapboxApi.SearchLocationByName(city_name).map {
             searchLocationResponseDataoMapper.mapFromDTO(it)
         }
