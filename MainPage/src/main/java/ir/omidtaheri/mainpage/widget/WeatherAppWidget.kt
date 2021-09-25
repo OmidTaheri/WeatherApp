@@ -5,7 +5,6 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.RemoteViews
 import io.reactivex.rxkotlin.subscribeBy
 import ir.omidtaheri.daggercore.di.utils.DaggerInjectUtils
@@ -16,7 +15,7 @@ import ir.omidtaheri.domain.interactor.usecaseParam.GetCurrentByCoordinatesParam
 import ir.omidtaheri.mainpage.R
 import ir.omidtaheri.mainpage.di.components.DaggerMainComponent
 import ir.omidtaheri.mainpage.entity.LocationEntity.LocationUiEntity
-import ir.omidtaheri.mainpage.entity.currentEntity.currentWeatherUiEntity
+import ir.omidtaheri.mainpage.entity.currentEntity.CurrentWeatherUiEntity
 import ir.omidtaheri.mainpage.mapper.CurrentWeatherEntityUiDomainMapper
 import ir.omidtaheri.mainpage.widget.utils.AlarmManagerUtils
 import ir.omidtaheri.uibase.getImage
@@ -142,7 +141,7 @@ class WeatherAppWidget : AppWidgetProvider() {
     }
 
     fun showData(
-        data: currentWeatherUiEntity,
+        data: CurrentWeatherUiEntity,
         remoteViews: RemoteViews,
         appWidgetManager: AppWidgetManager,
         appWidgetId: Int, context: Context

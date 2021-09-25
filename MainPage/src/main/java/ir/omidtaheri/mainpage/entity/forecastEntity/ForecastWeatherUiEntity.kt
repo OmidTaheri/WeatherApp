@@ -1,7 +1,7 @@
 package ir.omidtaheri.mainpage.entity.forecastEntity
 
 
-data class forecastWeatherUiEntity(
+data class ForecastWeatherUiEntity(
     val city: City,
-    val list: List<forecastList>
+    val list: List<ForecastList>
 )

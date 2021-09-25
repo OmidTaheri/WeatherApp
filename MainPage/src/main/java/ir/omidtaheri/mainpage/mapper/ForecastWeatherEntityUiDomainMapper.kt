@@ -1,22 +1,22 @@
 package ir.omidtaheri.mainpage.mapper
 
-import ir.omidtaheri.domain.entity.forecastEntity.forecastWeatherDomainEntity
+import ir.omidtaheri.domain.entity.forecastEntity.ForecastWeatherDomainEntity
 import ir.omidtaheri.mainpage.entity.forecastEntity.*
 import javax.inject.Inject
 
 class ForecastWeatherEntityUiDomainMapper @Inject constructor() :
-    UiDomainMapper<forecastWeatherUiEntity, forecastWeatherDomainEntity> {
+    UiDomainMapper<ForecastWeatherUiEntity, ForecastWeatherDomainEntity> {
 
-    override fun mapFromUiEntity(from: forecastWeatherUiEntity): forecastWeatherDomainEntity {
-        return forecastWeatherDomainEntity(
+    override fun mapFromUiEntity(from: ForecastWeatherUiEntity): ForecastWeatherDomainEntity {
+        return ForecastWeatherDomainEntity(
             mapFromCityUi(from.city),
             mapFromForecastListUi(from.list)
         )
 
     }
 
-    override fun mapToUiEntity(from: forecastWeatherDomainEntity): forecastWeatherUiEntity {
-        return forecastWeatherUiEntity(mapToCityUi(from.city), mapToForecastListUi(from.list))
+    override fun mapToUiEntity(from: ForecastWeatherDomainEntity): ForecastWeatherUiEntity {
+        return ForecastWeatherUiEntity(mapToCityUi(from.city), mapToForecastListUi(from.list))
     }
 
 
@@ -34,10 +34,10 @@ class ForecastWeatherEntityUiDomainMapper @Inject constructor() :
         return ir.omidtaheri.domain.entity.forecastEntity.Coord(coord.lat, coord.lon)
     }
 
-    fun mapFromForecastListUi(forecastList: List<forecastList>): List<ir.omidtaheri.domain.entity.forecastEntity.forecastList> {
+    fun mapFromForecastListUi(forecastList: List<ForecastList>): List<ir.omidtaheri.domain.entity.forecastEntity.ForecastList> {
 
         return forecastList.map {
-            ir.omidtaheri.domain.entity.forecastEntity.forecastList(
+            ir.omidtaheri.domain.entity.forecastEntity.ForecastList(
                 it.dt,
                 it.dt_txt,
                 mapFromMainUi(it.main),
@@ -91,10 +91,10 @@ class ForecastWeatherEntityUiDomainMapper @Inject constructor() :
         return Coord(coord.lat, coord.lon)
     }
 
-    fun mapToForecastListUi(forecastList: List<ir.omidtaheri.domain.entity.forecastEntity.forecastList>): List<forecastList> {
+    fun mapToForecastListUi(forecastList: List<ir.omidtaheri.domain.entity.forecastEntity.ForecastList>): List<ForecastList> {
 
         return forecastList.map {
-            forecastList(
+            ForecastList(
                 it.dt,
                 it.dt_txt,
                 mapToMainUi(it.main),

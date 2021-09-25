@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 
-data class forecastList(
+data class ForecastList(
     val dt: Int,
     val dt_txt: String,
     val main: Main,
@@ -32,12 +32,12 @@ data class forecastList(
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<forecastList> {
-        override fun createFromParcel(parcel: Parcel): forecastList {
-            return forecastList(parcel)
+    companion object CREATOR : Parcelable.Creator<ForecastList> {
+        override fun createFromParcel(parcel: Parcel): ForecastList {
+            return ForecastList(parcel)
         }
 
-        override fun newArray(size: Int): Array<forecastList?> {
+        override fun newArray(size: Int): Array<ForecastList?> {
             return arrayOfNulls(size)
         }
     }

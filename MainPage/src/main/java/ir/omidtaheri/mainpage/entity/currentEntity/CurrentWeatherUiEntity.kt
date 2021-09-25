@@ -1,7 +1,7 @@
 package ir.omidtaheri.mainpage.entity.currentEntity
 
 
-data class currentWeatherUiEntity(
+data class CurrentWeatherUiEntity(
     val coord: Coord,
     val main: Main,
     val name: String,

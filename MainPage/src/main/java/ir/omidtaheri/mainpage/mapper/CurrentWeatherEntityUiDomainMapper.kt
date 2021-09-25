@@ -5,8 +5,8 @@ import ir.omidtaheri.mainpage.entity.currentEntity.*
 import javax.inject.Inject
 
 class CurrentWeatherEntityUiDomainMapper @Inject constructor() :
-    UiDomainMapper<currentWeatherUiEntity, currentWeatherDomainEntity> {
-    override fun mapFromUiEntity(from: currentWeatherUiEntity): currentWeatherDomainEntity {
+    UiDomainMapper<CurrentWeatherUiEntity, currentWeatherDomainEntity> {
+    override fun mapFromUiEntity(from: CurrentWeatherUiEntity): currentWeatherDomainEntity {
         return currentWeatherDomainEntity(
             mapFromCoordUi(from.coord),
             mapFromMainUi(from.main),
@@ -17,8 +17,8 @@ class CurrentWeatherEntityUiDomainMapper @Inject constructor() :
         )
     }
 
-    override fun mapToUiEntity(from: currentWeatherDomainEntity): currentWeatherUiEntity {
-        return currentWeatherUiEntity(
+    override fun mapToUiEntity(from: currentWeatherDomainEntity): CurrentWeatherUiEntity {
+        return CurrentWeatherUiEntity(
             mapToCoordUi(from.coord),
             mapToMainUi(from.main),
             from.name,

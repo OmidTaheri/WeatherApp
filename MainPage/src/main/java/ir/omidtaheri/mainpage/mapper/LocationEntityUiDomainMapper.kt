@@ -2,13 +2,13 @@ package ir.omidtaheri.mainpage.mapper
 
 import ir.omidtaheri.domain.entity.searchLoacation.Feature
 import ir.omidtaheri.domain.entity.searchLoacation.Geometry
-import ir.omidtaheri.domain.entity.searchLoacation.searchLocationDomainEntity
+import ir.omidtaheri.domain.entity.searchLoacation.SearchLocationDomainEntity
 import ir.omidtaheri.mainpage.entity.LocationEntity.LocationUiEntity
 import javax.inject.Inject
 
 class LocationEntityUiDomainMapper @Inject constructor() :
-    UiDomainMapper<List<LocationUiEntity>, searchLocationDomainEntity> {
-    override fun mapFromUiEntity(from: List<LocationUiEntity>): searchLocationDomainEntity {
+    UiDomainMapper<List<LocationUiEntity>, SearchLocationDomainEntity> {
+    override fun mapFromUiEntity(from: List<LocationUiEntity>): SearchLocationDomainEntity {
 
         val featureList = arrayListOf<Feature>()
 
@@ -16,10 +16,10 @@ class LocationEntityUiDomainMapper @Inject constructor() :
             featureList.add(Feature(Geometry(listOf(it.log, it.lat)), it.fullName, it.shortName))
         }
 
-        return searchLocationDomainEntity(featureList)
+        return SearchLocationDomainEntity(featureList)
     }
 
-    override fun mapToUiEntity(from: searchLocationDomainEntity): List<LocationUiEntity> {
+    override fun mapToUiEntity(from: SearchLocationDomainEntity): List<LocationUiEntity> {
 
         val uiLocationList = arrayListOf<LocationUiEntity>()
 
