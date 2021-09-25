@@ -12,7 +12,7 @@ import ir.omidtaheri.daggercore.di.modules.RepositoryModule
 
 class ApplicationClass : MultiDexApplication(), ApplicationComponentProvider {
 
-    lateinit var applicationComponent: ApplicationComponent
+    private lateinit var applicationComponent: ApplicationComponent
 
 
     override fun onCreate() {
