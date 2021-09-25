@@ -18,30 +18,30 @@ abstract class BaseFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return InflateViewBinding(inflater, container)
+        return inflateViewBinding(inflater, container)
     }
 
-    abstract fun InflateViewBinding(inflater: LayoutInflater, container: ViewGroup?): View?
+    abstract fun inflateViewBinding(inflater: LayoutInflater, container: ViewGroup?): View?
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindUiComponent()
-        ConfigDaggerComponent()
-        SetLivaDataObserver()
+        configDaggerComponent()
+        setLivaDataObserver()
     }
 
     abstract fun bindUiComponent()
 
-    private fun SetLivaDataObserver() {
+    private fun setLivaDataObserver() {
         setLoadingLiveDataObserver()
         setToastErrorLiveDataObserver()
         setSnackBarErrorLivaDataObserver()
         setToastMessageLiveDataObserver()
         setSnackBarMessageLiveDataObserver()
-        setDataLiveObserver()
+        setLiveDataObserver()
     }
 
-    abstract fun setDataLiveObserver()
+    abstract fun setLiveDataObserver()
 
     abstract fun setSnackBarMessageLiveDataObserver()
 
@@ -53,7 +53,7 @@ abstract class BaseFragment : Fragment() {
 
     abstract fun setLoadingLiveDataObserver()
 
-    abstract fun ConfigDaggerComponent()
+    abstract fun configDaggerComponent()
 
     abstract fun showLoading(show: Boolean)
 
