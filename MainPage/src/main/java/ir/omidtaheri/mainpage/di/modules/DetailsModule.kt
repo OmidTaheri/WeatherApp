@@ -1,15 +1,16 @@
 package ir.omidtaheri.mainpage.di.modules
 
-import androidx.lifecycle.ViewModelProvider
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
+import ir.omidtaheri.androidbase.viewmodelutils.ViewModelAssistedFactory
+import ir.omidtaheri.daggercore.di.scopes.FragmentScope
+import ir.omidtaheri.mainpage.ui.DetailFragment.viewmodel.DetailsViewModel
 import ir.omidtaheri.mainpage.ui.DetailFragment.viewmodel.DetailsViewModelFactory
 
 @Module
-class DetailsModule {
+interface DetailsModule {
 
-    @Provides
-    fun provideDetailViewModel(viewmodel: DetailsViewModelFactory): ViewModelProvider.Factory {
-        return viewmodel
-    }
+    @FragmentScope
+    @Binds
+    fun provideDetailViewModel(viewmodel: DetailsViewModelFactory): ViewModelAssistedFactory<DetailsViewModel>
 }
