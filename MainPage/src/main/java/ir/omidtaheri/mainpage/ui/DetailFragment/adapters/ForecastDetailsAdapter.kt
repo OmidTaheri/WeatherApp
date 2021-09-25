@@ -7,12 +7,12 @@ import ir.omidtaheri.androidbase.BaseViewHolder
 import ir.omidtaheri.androidbase.Utils.TimeUtils
 import ir.omidtaheri.mainpage.R
 import ir.omidtaheri.mainpage.databinding.ForecastWeatherItemBinding
-import ir.omidtaheri.mainpage.entity.forecastEntity.forecastList
+import ir.omidtaheri.mainpage.entity.forecastEntity.ForecastList
 
 class ForecastDetailsAdapter() :
     RecyclerView.Adapter<BaseViewHolder>() {
 
-    var items: MutableList<forecastList> = mutableListOf()
+    var items: MutableList<ForecastList> = mutableListOf()
 
     var titleColor: Int? = null
     var backgroundColor: Int? = null
@@ -40,20 +40,20 @@ class ForecastDetailsAdapter() :
     }
 
     //    Helpers
-    fun addItem(item: forecastList, timeZone: Int?) {
+    fun addItem(item: ForecastList, timeZone: Int?) {
         this.timeZone = timeZone
         items.add(item)
         notifyItemInserted(items.size - 1)
     }
 
-    fun addItems(list: List<forecastList>, timeZone: Int?) {
+    fun addItems(list: List<ForecastList>, timeZone: Int?) {
         clear()
         this.timeZone = timeZone
         items.addAll(list)
         notifyDataSetChanged()
     }
 
-    fun remove(item: forecastList) {
+    fun remove(item: ForecastList) {
         val index = items.indexOf(item)
         if (index >= 0) {
             items.removeAt(index)
