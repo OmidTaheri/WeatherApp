@@ -4,22 +4,15 @@ import android.app.Application
 import android.content.Context
 import dagger.Module
 import dagger.Provides
-import ir.omidtaheri.daggercore.di.schedulers.AppScheduler
+import javax.inject.Singleton
 
-@Module
-class ApplicationModule(val application: Application) {
+@Module(includes = [SchedulersModule::class])
+object ApplicationModule {
 
+    @Singleton
     @Provides
-    fun provideAppContext(): Context {
+    fun provideAppContext(application: Application): Context {
         return application.applicationContext
     }
 
-    @Provides
-    fun provideApplication(): Application {
-        return application
-    }
-
-    @Provides
-    fun provideSchedulars(schedulers: AppScheduler): ir.omidtaheri.domain.interactor.base.Schedulers =
-        schedulers
 }

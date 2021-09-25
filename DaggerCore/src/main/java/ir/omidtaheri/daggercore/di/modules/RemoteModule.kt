@@ -15,18 +15,16 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
+import javax.inject.Singleton
 
 @Module
-class RemoteModule(
-    val baseUrl: String,
-    val apiKey: String,
-    val mapboxBaseUrl: String,
-    val mapBoxApiKey: String
-) {
+object RemoteModule {
 
+    @Singleton
     @Provides
     @WeatherIntercepter
-    fun provideWeatherInterceptors(): ArrayList<Interceptor> {
+    fun provideWeatherInterceptors(@Named("apiKey") apiKey: String): ArrayList<Interceptor> {
         val interceptors = arrayListOf<Interceptor>()
         val keyInterceptor = Interceptor { chain ->
 
@@ -48,10 +46,10 @@ class RemoteModule(
         return interceptors
     }
 
-
+    @Singleton
     @Provides
     @MapboxIntercepter
-    fun provideMapboxInterceptors(): ArrayList<Interceptor> {
+    fun provideMapboxInterceptors(@Named("mapBoxApiKey") mapBoxApiKey: String): ArrayList<Interceptor> {
         val interceptors = arrayListOf<Interceptor>()
         val keyInterceptor = Interceptor { chain ->
 
@@ -73,10 +71,13 @@ class RemoteModule(
         return interceptors
     }
 
-
+    @Singleton
     @Provides
     @MapboxRetrofit
-    fun provideMapboxRetrofit(@MapboxIntercepter interceptors: ArrayList<Interceptor>): Retrofit {
+    fun provideMapboxRetrofit(
+        @MapboxIntercepter interceptors: ArrayList<Interceptor>,
+        @Named("mapboxBaseUrl") mapboxBaseUrl: String
+    ): Retrofit {
 
         val clientBuilder = OkHttpClient.Builder()
         if (!interceptors.isEmpty()) {
@@ -97,10 +98,13 @@ class RemoteModule(
             .build()
     }
 
-
+    @Singleton
     @Provides
     @WeatherRetrofit
-    fun provideRetrofit(@WeatherIntercepter interceptors: ArrayList<Interceptor>): Retrofit {
+    fun provideRetrofit(
+        @WeatherIntercepter interceptors: ArrayList<Interceptor>,
+        @Named("url") baseUrl: String
+    ): Retrofit {
 
         val clientBuilder = OkHttpClient.Builder()
         if (!interceptors.isEmpty()) {
@@ -121,12 +125,13 @@ class RemoteModule(
             .build()
     }
 
+    @Singleton
     @Provides
     fun provideWeatherApi(@WeatherRetrofit retrofit: Retrofit): WeatherApi {
         return retrofit.create(WeatherApi::class.java)
     }
 
-
+    @Singleton
     @Provides
     fun provideMapboxApi(@MapboxRetrofit retrofit: Retrofit): MapboxApi {
         return retrofit.create(MapboxApi::class.java)

@@ -1,32 +1,36 @@
 package ir.omidtaheri.daggercore.di.modules
 
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import ir.omidtaheri.data.repository.CurrentWeatherRepository
 import ir.omidtaheri.data.repository.ForecastWeatherRepository
 import ir.omidtaheri.data.repository.LocationRepository
 import ir.omidtaheri.domain.gateway.CurrentWeatherGateWay
 import ir.omidtaheri.domain.gateway.ForecastWeatherGateWay
 import ir.omidtaheri.domain.gateway.LocationGateWay
+import javax.inject.Singleton
 
 @Module
-class RepositoryModule {
+interface RepositoryModule {
 
-    @Provides
+    @Singleton
+    @Binds
     fun provideCurrentWeatherRepository(
         repository: CurrentWeatherRepository
-    ): CurrentWeatherGateWay = repository
+    ): CurrentWeatherGateWay
 
 
-    @Provides
+    @Singleton
+    @Binds
     fun provideForecastWeatherRepository(
         repository: ForecastWeatherRepository
-    ): ForecastWeatherGateWay = repository
+    ): ForecastWeatherGateWay
 
 
-    @Provides
+    @Singleton
+    @Binds
     fun provideLocationRepository(
         repository: LocationRepository
-    ): LocationGateWay = repository
+    ): LocationGateWay
 
 }

@@ -1,30 +1,34 @@
 package ir.omidtaheri.daggercore.di.modules
 
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 import ir.omidtaheri.data.datasource.remote.CurrentWeatherRemoteDataSourceInterface
 import ir.omidtaheri.data.datasource.remote.ForecastWeatherRemoteDataSourceInterface
 import ir.omidtaheri.data.datasource.remote.SearchLocationRemoteDataSourceInterface
 import ir.omidtaheri.remote.datasource.CurrentWeatherRemoteDataSourceImp
 import ir.omidtaheri.remote.datasource.ForecastWeatherRemoteDataSourceImp
 import ir.omidtaheri.remote.datasource.SearchLocationRemoteDataSourceImp
+import javax.inject.Singleton
 
 @Module(includes = [RemoteModule::class])
-class RemoteDataSourceModule {
+interface RemoteDataSourceModule {
 
-    @Provides
+    @Singleton
+    @Binds
     fun provideCurrentWeatherRemoteDataSource(
         datasource: CurrentWeatherRemoteDataSourceImp
-    ): CurrentWeatherRemoteDataSourceInterface = datasource
+    ): CurrentWeatherRemoteDataSourceInterface
 
-    @Provides
+    @Singleton
+    @Binds
     fun provideForecastWeatherRemoteDataSource(
         datasource: ForecastWeatherRemoteDataSourceImp
-    ): ForecastWeatherRemoteDataSourceInterface = datasource
+    ): ForecastWeatherRemoteDataSourceInterface
 
 
-    @Provides
+    @Singleton
+    @Binds
     fun provideSearchLocationRemoteDataSource(
         datasource: SearchLocationRemoteDataSourceImp
-    ): SearchLocationRemoteDataSourceInterface = datasource
+    ): SearchLocationRemoteDataSourceInterface
 }
