@@ -1,21 +1,21 @@
 package ir.omidtaheri.data.mapper
 
 import ir.omidtaheri.data.entity.forecastEntity.*
-import ir.omidtaheri.domain.entity.forecastEntity.forecastWeatherDomainEntity
+import ir.omidtaheri.domain.entity.forecastEntity.ForecastWeatherDomainEntity
 import javax.inject.Inject
 
 class ForecastEntityDomainDataMapper @Inject constructor() :
-    DomainDataMapper<forecastWeatherDataEntity, forecastWeatherDomainEntity> {
+    DomainDataMapper<forecastWeatherDataEntity, ForecastWeatherDomainEntity> {
 
-    override fun mapFromDataEntity(from: forecastWeatherDataEntity): forecastWeatherDomainEntity {
+    override fun mapFromDataEntity(from: forecastWeatherDataEntity): ForecastWeatherDomainEntity {
 
-        return forecastWeatherDomainEntity(
+        return ForecastWeatherDomainEntity(
             mapFromCityData(from.city),
             mapFromForecastListData(from.list)
         )
     }
 
-    override fun mapToDataEntity(from: forecastWeatherDomainEntity): forecastWeatherDataEntity {
+    override fun mapToDataEntity(from: ForecastWeatherDomainEntity): forecastWeatherDataEntity {
 
         return forecastWeatherDataEntity(mapToCityData(from.city), mapToForecastListData(from.list))
     }
@@ -35,10 +35,10 @@ class ForecastEntityDomainDataMapper @Inject constructor() :
         return ir.omidtaheri.domain.entity.forecastEntity.Coord(coord.lat, coord.lon)
     }
 
-    fun mapFromForecastListData(forecastList: List<forecastList>): List<ir.omidtaheri.domain.entity.forecastEntity.forecastList> {
+    fun mapFromForecastListData(forecastList: List<forecastList>): List<ir.omidtaheri.domain.entity.forecastEntity.ForecastList> {
 
         return forecastList.map {
-            ir.omidtaheri.domain.entity.forecastEntity.forecastList(
+            ir.omidtaheri.domain.entity.forecastEntity.ForecastList(
                 it.dt,
                 it.dt_txt,
                 mapFromMainData(it.main),
@@ -92,7 +92,7 @@ class ForecastEntityDomainDataMapper @Inject constructor() :
         return Coord(coord.lat, coord.lon)
     }
 
-    fun mapToForecastListData(forecastList: List<ir.omidtaheri.domain.entity.forecastEntity.forecastList>): List<forecastList> {
+    fun mapToForecastListData(forecastList: List<ir.omidtaheri.domain.entity.forecastEntity.ForecastList>): List<forecastList> {
 
         return forecastList.map {
             forecastList(

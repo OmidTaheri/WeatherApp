@@ -3,18 +3,18 @@ package ir.omidtaheri.data.mapper
 import ir.omidtaheri.data.entity.searchLoacation.Feature
 import ir.omidtaheri.data.entity.searchLoacation.Geometry
 import ir.omidtaheri.data.entity.searchLoacation.searchLocationDataEntity
-import ir.omidtaheri.domain.entity.searchLoacation.searchLocationDomainEntity
+import ir.omidtaheri.domain.entity.searchLoacation.SearchLocationDomainEntity
 import javax.inject.Inject
 
 class LocationEntityDomainDataMapper @Inject constructor() :
-    DomainDataMapper<searchLocationDataEntity, searchLocationDomainEntity> {
+    DomainDataMapper<searchLocationDataEntity, SearchLocationDomainEntity> {
 
-    override fun mapFromDataEntity(from: searchLocationDataEntity): searchLocationDomainEntity {
+    override fun mapFromDataEntity(from: searchLocationDataEntity): SearchLocationDomainEntity {
 
-        return searchLocationDomainEntity(mapFromFeatureListData(from.features))
+        return SearchLocationDomainEntity(mapFromFeatureListData(from.features))
     }
 
-    override fun mapToDataEntity(from: searchLocationDomainEntity): searchLocationDataEntity {
+    override fun mapToDataEntity(from: SearchLocationDomainEntity): searchLocationDataEntity {
         return searchLocationDataEntity(mapToFeatureListData(from.features))
     }
 
