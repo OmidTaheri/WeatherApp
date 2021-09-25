@@ -16,7 +16,9 @@
         <item name="colorOnSurface">@color/colorOnSurface</item>
         <item name="colorError">@color/colorError</item>
         <item name="colorOnError">@color/colorOnError</item>
-
+        <item name="weatherSearchBarHintColor">@color/searchBarHintColor</item>
+        <item name="weatherSettingImageColor">@color/settingImageColor</item>
+        <item name="weatherCloseImageColor">@color/closeImageColor</item>
         ///typography
         <item name="textAppearanceHeadline1">@style/TextAppearance.MyApp.Headline1</item>
         <item name="textAppearanceHeadline2">@style/TextAppearance.MyApp.Headline2</item>
@@ -194,7 +196,7 @@
 
     <style name="Widget.MyApp.SearchBar" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="boxBackgroundColor">?attr/colorOnPrimary</item>
-        <item name="android:textColorHint">@color/searchBarHintColor</item>
+        <item name="android:textColorHint">?attr/weatherSearchBarHintColor</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearance.MyApp.searchbar</item>
     </style>
 

@@ -21,5 +21,7 @@
 
 
     <color name="searchBarHintColor">#99000000</color>
+    <color name="settingImageColor">#FFFFFF</color>
+    <color name="closeImageColor">#FFFFFF</color>
 
 </resources>

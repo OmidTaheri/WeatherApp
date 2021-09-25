@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="weatherSearchBarHintColor" format="color" />
+    <attr name="weatherSettingImageColor" format="color" />
+    <attr name="weatherCloseImageColor" format="color" />
+</resources>

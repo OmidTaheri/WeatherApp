@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorSecondary"
+    android:background="?attr/colorSecondary"
     android:orientation="horizontal"
     android:padding="@dimen/widget_margin"
     android:id="@+id/widgetParent">
@@ -67,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Loading"
-                android:textColor="@color/colorOnPrimary" />
+                android:textColor="?attr/colorOnPrimary" />
 
 
         </LinearLayout>
@@ -106,7 +106,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Loading"
-                android:textColor="@color/colorOnPrimary" />
+                android:textColor="?attr/colorOnPrimary" />
 
 
         </LinearLayout>
@@ -124,7 +124,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Loading"
-                android:textColor="@color/colorOnPrimary" />
+                android:textColor="?attr/colorOnPrimary" />
 
 
         </LinearLayout>
