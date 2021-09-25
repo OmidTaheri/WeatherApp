@@ -316,7 +316,7 @@ class MainFragment : BaseFragment<MainViewModel>(), RecyclerViewAdapter.Recycler
         })
 
 
-        viewModel.LocationUiResultsLiveData.observe(this, Observer {
+        viewModel.locationUiResultsLiveData.observe(this, Observer {
 
             if (it == null || it.isEmpty()) {
                 multiStatePage.toEmptyState()
@@ -326,7 +326,7 @@ class MainFragment : BaseFragment<MainViewModel>(), RecyclerViewAdapter.Recycler
             }
         })
 
-        viewModel.ErrorLocationResultsLiveData.observe(this, Observer {
+        viewModel.errorLocationResultsLiveData.observe(this, Observer {
             multiStatePage.toErrorState(View.OnClickListener {
                 multiStatePage.toLoadingState()
                 viewModel.searchSubject.onNext(lastSearchLocationQuery)

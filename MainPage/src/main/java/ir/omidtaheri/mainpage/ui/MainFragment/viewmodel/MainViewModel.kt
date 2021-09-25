@@ -3,12 +3,12 @@ package ir.omidtaheri.mainpage.ui.MainFragment.viewmodel
 import android.app.Application
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
-import ir.omidtaheri.androidbase.BaseViewModel
+import ir.omidtaheri.androidbase.BaseAndroidViewModel
 import ir.omidtaheri.androidbase.Utils.TimeUtils
 import ir.omidtaheri.domain.datastate.DataState
 import ir.omidtaheri.domain.datastate.MessageHolder
@@ -20,60 +20,55 @@ import ir.omidtaheri.domain.interactor.base.Schedulers
 import ir.omidtaheri.domain.interactor.usecaseParam.GetCurrentByCoordinatesParams
 import ir.omidtaheri.domain.interactor.usecaseParam.GetForecastByCoordinatesParams
 import ir.omidtaheri.mainpage.entity.LocationEntity.LocationUiEntity
-import ir.omidtaheri.mainpage.entity.currentEntity.currentWeatherUiEntity
-import ir.omidtaheri.mainpage.entity.forecastEntity.forecastList
-import ir.omidtaheri.mainpage.entity.forecastEntity.forecastWeatherUiEntity
+import ir.omidtaheri.mainpage.entity.currentEntity.CurrentWeatherUiEntity
+import ir.omidtaheri.mainpage.entity.forecastEntity.ForecastList
+import ir.omidtaheri.mainpage.entity.forecastEntity.ForecastWeatherUiEntity
 import ir.omidtaheri.mainpage.mapper.CurrentWeatherEntityUiDomainMapper
 import ir.omidtaheri.mainpage.mapper.ForecastWeatherEntityUiDomainMapper
 import ir.omidtaheri.mainpage.mapper.LocationEntityUiDomainMapper
 import java.util.concurrent.TimeUnit
 
 class MainViewModel(
-    val schedulers: Schedulers,
-    val getCurrentWeather: GetCurrentByCoordinates,
-    val getForecast: GetForecastByCoordinates,
-    val currentWeatherEntityUiDomainMapper: CurrentWeatherEntityUiDomainMapper,
-    val forecastWeatherEntityUiDomainMapper: ForecastWeatherEntityUiDomainMapper,
-    val searchLocationByName: SearchLocationByName,
-    val locationEntityUiDomainMapper: LocationEntityUiDomainMapper,
-    application: Application
+    private val schedulers: Schedulers,
+    private val getCurrentWeather: GetCurrentByCoordinates,
+    private val getForecast: GetForecastByCoordinates,
+    private val currentWeatherEntityUiDomainMapper: CurrentWeatherEntityUiDomainMapper,
+    private val forecastWeatherEntityUiDomainMapper: ForecastWeatherEntityUiDomainMapper,
+    private val searchLocationByName: SearchLocationByName,
+    private val locationEntityUiDomainMapper: LocationEntityUiDomainMapper,
+    private val state: SavedStateHandle,
+    private val mApplication: Application
 ) :
-    BaseViewModel(application) {
+    BaseAndroidViewModel(mApplication, state) {
 
     val searchSubject: PublishSubject<String> = PublishSubject.create()
 
 
-    private val _currentWeatherLiveData: MutableLiveData<currentWeatherUiEntity>
-    val currentWeatherLiveData: LiveData<currentWeatherUiEntity>
+    private val _currentWeatherLiveData: MutableLiveData<CurrentWeatherUiEntity> = MutableLiveData()
+    val currentWeatherLiveData: LiveData<CurrentWeatherUiEntity>
         get() = _currentWeatherLiveData
 
-    private val _forecastWeatherLiveData: MutableLiveData<forecastWeatherUiEntity>
-    val forecastWeatherLiveData: LiveData<forecastWeatherUiEntity>
+    private val _forecastWeatherLiveData: MutableLiveData<ForecastWeatherUiEntity> =
+        MutableLiveData()
+    val forecastWeatherLiveData: LiveData<ForecastWeatherUiEntity>
         get() = _forecastWeatherLiveData
 
 
-    private val _LocationUiResultsLiveData: MutableLiveData<List<LocationUiEntity>>
-    val LocationUiResultsLiveData: LiveData<List<LocationUiEntity>>
-        get() = _LocationUiResultsLiveData
+    private val _locationUiResultsLiveData: MutableLiveData<List<LocationUiEntity>> =
+        MutableLiveData()
+    val locationUiResultsLiveData: LiveData<List<LocationUiEntity>>
+        get() = _locationUiResultsLiveData
 
 
-    private val _ErrorLocationResultsLiveData: MutableLiveData<String>
-    val ErrorLocationResultsLiveData: LiveData<String>
-        get() = _ErrorLocationResultsLiveData
+    private val _errorLocationResultsLiveData: MutableLiveData<String> = MutableLiveData()
+    val errorLocationResultsLiveData: LiveData<String>
+        get() = _errorLocationResultsLiveData
 
 
-    private val _dayOfWeekLiveData: MutableLiveData<Int>
+    private val _dayOfWeekLiveData: MutableLiveData<Int> = MutableLiveData()
     val dayOfWeekLiveData: LiveData<Int>
         get() = _dayOfWeekLiveData
 
-
-    init {
-        _currentWeatherLiveData = MutableLiveData()
-        _forecastWeatherLiveData = MutableLiveData()
-        _dayOfWeekLiveData = MutableLiveData()
-        _LocationUiResultsLiveData = MutableLiveData()
-        _ErrorLocationResultsLiveData = MutableLiveData()
-    }
 
     fun getCurrentWeather(lat: Double, log: Double) {
         val params = GetCurrentByCoordinatesParams(lat, log, "metric")
@@ -152,11 +147,11 @@ class MainViewModel(
             when (messageHolder) {
 
                 is MessageHolder.MESSAGE -> {
-                    _ErrorSnackBar.value = messageHolder.message
+                    _errorSnackBar.value = messageHolder.message
                 }
 
-                is MessageHolder.Res -> _ErrorSnackBar.value =
-                    ApplicationClass.getString(
+                is MessageHolder.Res -> _errorSnackBar.value =
+                    mApplication.applicationContext.getString(
                         messageHolder.resId
                     )
             }
@@ -167,10 +162,10 @@ class MainViewModel(
         errorDataState.stateMessage!!.message.let { messageHolder ->
 
             when (messageHolder) {
-                is MessageHolder.MESSAGE -> _ErrorToast.value =
+                is MessageHolder.MESSAGE -> _errorToast.value =
                     messageHolder.message
-                is MessageHolder.Res -> _ErrorToast.value =
-                    ApplicationClass.getString(
+                is MessageHolder.Res -> _errorToast.value =
+                    mApplication.applicationContext.getString(
                         messageHolder.resId
                     )
             }
@@ -186,7 +181,7 @@ class MainViewModel(
     }
 
 
-    fun filterForecastItems(categorizeForecastItems: HashMap<Int, ArrayList<forecastList>>): List<forecastList> {
+    fun filterForecastItems(categorizeForecastItems: HashMap<Int, ArrayList<ForecastList>>): List<ForecastList> {
 
         return categorizeForecastItems.filterValues {
             !it.isEmpty()
@@ -200,11 +195,11 @@ class MainViewModel(
 
 
     fun categorizeForecastItems(
-        inputList: forecastWeatherUiEntity,
+        inputList: ForecastWeatherUiEntity,
         mainTimeZone: Int?,
         currentDay: Int?
-    ): HashMap<Int, ArrayList<forecastList>> {
-        val mapOfForecastDays: HashMap<Int, ArrayList<forecastList>> = hashMapOf()
+    ): HashMap<Int, ArrayList<ForecastList>> {
+        val mapOfForecastDays: HashMap<Int, ArrayList<ForecastList>> = hashMapOf()
 
         inputList.list.sortedBy {
             it.dt
@@ -221,7 +216,7 @@ class MainViewModel(
             if (mapOfForecastDays.keys.contains(dayOfWeek)) {
                 mapOfForecastDays.getValue(dayOfWeek).add(it)
             } else {
-                val dayList = arrayListOf<forecastList>()
+                val dayList = arrayListOf<ForecastList>()
                 dayList.add(it)
                 mapOfForecastDays.put(dayOfWeek, dayList)
             }
@@ -237,8 +232,8 @@ class MainViewModel(
         val timeStampMilis: Long = (dt.toLong() * 1000)
         val loacalTime = TimeUtils.getDataTimeByMillis(timeStampMilis)
         val timeZone = TimeUtils.getTimeZoneFromOffsetSeconds(timezone)
-        val MainTime = TimeUtils.setTimeZoneToDateTime(loacalTime, timeZone)
-        return MainTime.dayOfWeek
+        val mainTime = TimeUtils.setTimeZoneToDateTime(loacalTime, timeZone)
+        return mainTime.dayOfWeek
     }
 
 
@@ -338,7 +333,7 @@ class MainViewModel(
                 when (response) {
 
                     is DataState.SUCCESS -> {
-                        _LocationUiResultsLiveData.value =
+                        _locationUiResultsLiveData.value =
                             locationEntityUiDomainMapper.mapToUiEntity(response.data!!)
                     }
 
@@ -355,7 +350,7 @@ class MainViewModel(
                                 }
 
                                 is UiComponentType.DIALOG -> {
-                                    _ErrorLocationResultsLiveData.value = "Place not found"
+                                    _errorLocationResultsLiveData.value = "Place not found"
                                 }
                             }
                         }

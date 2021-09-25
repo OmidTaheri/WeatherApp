@@ -1,8 +1,8 @@
 package ir.omidtaheri.mainpage.ui.MainFragment.viewmodel
 
 import android.app.Application
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.SavedStateHandle
+import ir.omidtaheri.androidbase.viewmodelutils.ViewModelAssistedFactory
 import ir.omidtaheri.domain.interactor.GetCurrentByCoordinates
 import ir.omidtaheri.domain.interactor.GetForecastByCoordinates
 import ir.omidtaheri.domain.interactor.SearchLocationByName
@@ -13,23 +13,26 @@ import ir.omidtaheri.mainpage.mapper.LocationEntityUiDomainMapper
 import javax.inject.Inject
 
 class MainViewModelFactory @Inject constructor(
-    val schedulers: Schedulers,
-    val getCurrentWeather: GetCurrentByCoordinates,
-    val getForecast: GetForecastByCoordinates,
-    val currentWeatherEntityUiDomainMapper: CurrentWeatherEntityUiDomainMapper,
-    val forecastWeatherEntityUiDomainMapper: ForecastWeatherEntityUiDomainMapper,
-    val searchLocationByName: SearchLocationByName,
-    val locationEntityUiDomainMapper: LocationEntityUiDomainMapper,
-    val application: Application
-) : ViewModelProvider.Factory {
-    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+    private val schedulers: Schedulers,
+    private val getCurrentWeather: GetCurrentByCoordinates,
+    private val getForecast: GetForecastByCoordinates,
+    private val currentWeatherEntityUiDomainMapper: CurrentWeatherEntityUiDomainMapper,
+    private val forecastWeatherEntityUiDomainMapper: ForecastWeatherEntityUiDomainMapper,
+    private val searchLocationByName: SearchLocationByName,
+    private val locationEntityUiDomainMapper: LocationEntityUiDomainMapper,
+    private val application: Application
+) : ViewModelAssistedFactory<MainViewModel> {
+    override fun create(handle: SavedStateHandle): MainViewModel {
         return MainViewModel(
             schedulers,
             getCurrentWeather,
             getForecast,
             currentWeatherEntityUiDomainMapper,
-            forecastWeatherEntityUiDomainMapper, searchLocationByName, locationEntityUiDomainMapper,
+            forecastWeatherEntityUiDomainMapper,
+            searchLocationByName,
+            locationEntityUiDomainMapper,
+            handle,
             application
-        ) as T
+        )
     }
 }
