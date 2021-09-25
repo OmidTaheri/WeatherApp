@@ -14,8 +14,8 @@ import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.doOnTextChanged
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.palette.graphics.Palette
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -29,15 +29,16 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import ir.omidtaheri.androidbase.BaseFragment
+import ir.omidtaheri.androidbase.viewmodelutils.GenericSavedStateViewModelFactory
 import ir.omidtaheri.daggercore.di.utils.DaggerInjectUtils
 import ir.omidtaheri.mainpage.R
 import ir.omidtaheri.mainpage.databinding.MainFragmentBinding
 import ir.omidtaheri.mainpage.di.components.DaggerMainComponent
 import ir.omidtaheri.mainpage.entity.LocationEntity.LocationUiEntity
+import ir.omidtaheri.mainpage.entity.forecastEntity.ForecastList
 import ir.omidtaheri.mainpage.entity.forecastEntity.Main
 import ir.omidtaheri.mainpage.entity.forecastEntity.Weather
 import ir.omidtaheri.mainpage.entity.forecastEntity.Wind
-import ir.omidtaheri.mainpage.entity.forecastEntity.forecastList
 import ir.omidtaheri.mainpage.ui.MainFragment.adapters.RecyclerViewAdapter
 import ir.omidtaheri.mainpage.ui.MainFragment.adapters.SearchLocationAdapter
 import ir.omidtaheri.mainpage.ui.MainFragment.viewmodel.MainViewModel
@@ -50,17 +51,10 @@ import ir.omidtaheri.viewcomponents.MultiStatePage.MultiStatePage
 import kotlinx.android.synthetic.main.bottom_sheet_search_location.view.*
 
 
-class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback,
+class MainFragment : BaseFragment<MainViewModel>(), RecyclerViewAdapter.RecyclerAdapterCallback,
     SearchLocationAdapter.Callback {
 
-
-    private lateinit var viewModel: MainViewModel
-    private lateinit var _viewbinding: MainFragmentBinding
-
-    private val viewbinding
-        get() = _viewbinding!!
-
-
+    private var viewBinding: MainFragmentBinding? = null
     private lateinit var largeCardView: MultiStateLargeCardview
     private lateinit var recyclerView: RecyclerView
     private lateinit var fab: FloatingActionButton
@@ -69,38 +63,34 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
     private lateinit var searchbarContainer: TextInputLayout
     private lateinit var searchBar: TextInputEditText
     private lateinit var bottomSheet: ConstraintLayout
-    private lateinit var chip_location: Chip
+    private lateinit var chipLocation: Chip
     private lateinit var bottomAppBar: BottomAppBar
-    private lateinit var page_background: View
-    private lateinit var bottom_sheet_close: ImageView
+    private lateinit var pageBackground: View
+    private lateinit var bottomSheetClose: ImageView
 
-    var mainColorvibrant: Int? = null
-    var mainColormuted: Int? = null
+    private val viewModel: MainViewModel by viewModels {
+        GenericSavedStateViewModelFactory(viewModelFactory, this)
+    }
 
-    var mainColordarkVibrant: Int? = null
-    var mainColordarkMuted: Int? = null
-
-    var mainColorlightVibrant: Int? = null
-    var mainColorlightMuted: Int? = null
-
-    var mainTimeZone: Int? = null
-    var currentDay: Int? = null
-
-
-    var lastLat: Double? = null
-    var lastLog: Double? = null
+    private var mainColorvibrant: Int? = null
+    private var mainColormuted: Int? = null
+    private var mainColordarkVibrant: Int? = null
+    private var mainColordarkMuted: Int? = null
+    private var mainColorlightVibrant: Int? = null
+    private var mainColorlightMuted: Int? = null
+    private var mainTimeZone: Int? = null
+    private var currentDay: Int? = null
+    private var lastLat: Double? = null
+    private var lastLog: Double? = null
     private lateinit var lastSearchLocationQuery: String
-    lateinit var cityName: String
-    lateinit var backgroundName: String
-
-
-    var categorizeForecastItems: HashMap<Int, ArrayList<forecastList>>? = null
+    private lateinit var cityName: String
+    private lateinit var backgroundName: String
+    private var categorizeForecastItems: HashMap<Int, ArrayList<ForecastList>>? = null
     private lateinit var locationrecyclerAdapter: SearchLocationAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         super.onViewCreated(view, savedInstanceState)
-        BackpressHandler()
+        backpressHandler()
         initRecyclerViews()
         initUiColors("rs")
         viewModel.setSearchSubjectObserver()
@@ -111,7 +101,7 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
         fetchData(lastLat!!, lastLog!!)
     }
 
-    private fun BackpressHandler() {
+    private fun backpressHandler() {
         activity?.onBackPressedDispatcher?.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
@@ -129,22 +119,19 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
 
 
     private fun initRecyclerViews() {
-
-
         recyclerView.adapter = RecyclerViewAdapter(this)
-
         recyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, true)
 
         val animation: LayoutAnimationController =
             AnimationUtils.loadLayoutAnimation(
-                viewbinding.recyclerView.context,
+                viewBinding!!.recyclerView!!.context,
                 R.anim.layout_animation_fall_down
             )
 
         recyclerView.layoutAnimation = animation
 
-        val emptyForecastList = forecastList(
+        val emptyForecastList = ForecastList(
             0,
             "",
             Main(0.0, 0, 0, 0.0, 0.0, 0.0),
@@ -153,13 +140,12 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
         )
 
 
-        val loadingList: List<forecastList> = listOf(
+        val loadingList: List<ForecastList> = listOf(
             emptyForecastList,
             emptyForecastList,
             emptyForecastList,
             emptyForecastList,
             emptyForecastList
-
         )
         (recyclerView.adapter as RecyclerViewAdapter).addItems(loadingList, null)
     }
@@ -169,20 +155,20 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
         viewModel.getForecastWeather(lat, log)
     }
 
-    override fun InflateViewBinding(inflater: LayoutInflater, container: ViewGroup?): View? {
-        _viewbinding = MainFragmentBinding.inflate(inflater, container, false)
-        val view = viewbinding.root
+    override fun inflateViewBinding(inflater: LayoutInflater, container: ViewGroup?): View? {
+        viewBinding = MainFragmentBinding.inflate(inflater, container, false)
+        val view = viewBinding!!.root
         return view
     }
 
     override fun bindUiComponent() {
 
-        largeCardView = _viewbinding!!.largeCardView
-        recyclerView = _viewbinding!!.recyclerView
-        fab = _viewbinding!!.fab
+        largeCardView = viewBinding!!.largeCardView
+        recyclerView = viewBinding!!.recyclerView
+        fab = viewBinding!!.fab
         largeCardView.toLoadingState()
-        page_background = _viewbinding!!.pageBackground
-        bottomAppBar = _viewbinding.bottomAppBar
+        pageBackground = viewBinding!!.pageBackground
+        bottomAppBar = viewBinding!!.bottomAppBar
         bindUiComponentBootomSheet()
         setFabClickListner()
 
@@ -190,7 +176,7 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
 
     private fun setFabClickListner() {
         fab.setOnClickListener {
-            if (sheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+            if (sheetBehavior.state != BottomSheetBehavior.STATE_EXPANDED) {
                 sheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             } else {
                 sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
@@ -199,12 +185,12 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
     }
 
     private fun bindUiComponentBootomSheet() {
-        chip_location = _viewbinding.root.chip_location
-        bottomSheet = _viewbinding.root.bottom_sheet
-        searchBar = _viewbinding.root.searchbar
-        searchbarContainer = _viewbinding.root.searchbar_container
-        multiStatePage = _viewbinding.root.MultiStatePage
-        bottom_sheet_close = _viewbinding.root.closeButton
+        chipLocation = viewBinding!!.root.chip_location
+        bottomSheet = viewBinding!!.root.bottom_sheet
+        searchBar = viewBinding!!.root.searchbar
+        searchbarContainer = viewBinding!!.root.searchbar_container
+        multiStatePage = viewBinding!!.root.MultiStatePage
+        bottomSheetClose = viewBinding!!.root.closeButton
 
         initBottomSheetRecyclerViews()
         setBottomSheetCallback()
@@ -241,14 +227,14 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
         })
         sheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN)
 
-        bottom_sheet_close.setOnClickListener {
+        bottomSheetClose.setOnClickListener {
             resetBootomSheet()
         }
     }
 
 
     private fun currentLocationChipInit(LocationName: String) {
-        chip_location.text = LocationName
+        chipLocation.text = LocationName
     }
 
 
@@ -268,7 +254,7 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
 
     private fun setSearchBarListners() {
 
-        searchBar.doOnTextChanged { text, start, before, count ->
+        searchBar.doOnTextChanged { text, _, _, _ ->
             lastSearchLocationQuery = text.toString()
             viewModel.searchSubject.onNext(text.toString())
         }
@@ -276,7 +262,7 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
     }
 
 
-    override fun ConfigDaggerComponent() {
+    override fun configDaggerComponent() {
         DaggerMainComponent
             .builder()
             .applicationComponent(DaggerInjectUtils.provideApplicationComponent(requireContext().applicationContext))
@@ -284,11 +270,8 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
             .inject(this)
     }
 
-    override fun SetViewModel() {
-        viewModel = ViewModelProvider(this, viewModelFactory).get(MainViewModel::class.java)
-    }
 
-    override fun setDataLiveObserver() {
+    override fun setLiveDataObserver() {
 
         viewModel.currentWeatherLiveData.observe(this, Observer {
 
@@ -302,17 +285,16 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
                 it.name,
                 viewModel.getCurrentTimeInTimeZone(it.timezone),
                 it.main.temp.toString() + " " + getString(R.string.wi_celsius),
-                it.weather.get(0).main,
+                it.weather[0].main,
                 it.main.temp_min.toString() + " " + getString(R.string.wi_celsius),
                 it.main.temp_max.toString() + " " + getString(R.string.wi_celsius),
-                viewModel.showWeatherIcon(it.weather.get(0).icon, it.weather.get(0).id)
+                viewModel.showWeatherIcon(it.weather[0].icon, it.weather[0].id)
             )
 
-
             backgroundName =
-                viewModel.setBackgroundImage(it.weather.get(0).main, it.weather.get(0).icon)
+                viewModel.setBackgroundImage(it.weather[0].main, it.weather[0].icon)
 
-            page_background.LoadBackgroungImage(backgroundName, requireContext())
+            pageBackground.LoadBackgroungImage(backgroundName, requireContext())
             initUiColors(backgroundName)
         })
 
@@ -336,7 +318,7 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
 
         viewModel.LocationUiResultsLiveData.observe(this, Observer {
 
-            if (it == null || it.size == 0) {
+            if (it == null || it.isEmpty()) {
                 multiStatePage.toEmptyState()
             } else {
                 (multiStatePage.getRecyclerView().adapter as SearchLocationAdapter).addItems(it)
@@ -445,7 +427,7 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
 
     private fun getImage(imageName: String, context: Context): Bitmap {
         val drawableId =
-            getResources().getIdentifier(imageName, "drawable", context.getPackageName())
+            resources.getIdentifier(imageName, "drawable", context.packageName)
         val options = BitmapFactory.Options()
         options.inSampleSize = 15
         return BitmapFactory.decodeResource(resources, drawableId, options)
@@ -460,8 +442,8 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
 
 
         mainColordarkVibrant?.let {
-            window.setStatusBarColor(mainColordarkVibrant!!)
-            window.setNavigationBarColor(mainColordarkVibrant!!)
+            window.statusBarColor = mainColordarkVibrant!!
+            window.navigationBarColor = mainColordarkVibrant!!
         } ?: changeSystemBarColorByOtherColor()
 
 
@@ -483,25 +465,25 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
 
 
     override fun setSnackBarMessageLiveDataObserver() {
-        viewModel.MessageSnackBar.observe(this, Observer {
+        viewModel.messageSnackBar.observe(this, Observer {
             showSnackBar(it)
         })
     }
 
     override fun setToastMessageLiveDataObserver() {
-        viewModel.MessageToast.observe(this, Observer {
+        viewModel.messageToast.observe(this, Observer {
             showToast(it)
         })
     }
 
     override fun setSnackBarErrorLivaDataObserver() {
-        viewModel.ErrorSnackBar.observe(this, Observer {
+        viewModel.errorSnackBar.observe(this, Observer {
             showSnackBar(it)
         })
     }
 
     override fun setToastErrorLiveDataObserver() {
-        viewModel.ErrorToast.observe(this, Observer {
+        viewModel.errorToast.observe(this, Observer {
             showToast(it)
         })
     }
@@ -524,7 +506,7 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
     }
 
     override fun showSnackBar(message: String) {
-        Snackbar.make(viewbinding.root, message, BaseTransientBottomBar.LENGTH_INDEFINITE)
+        Snackbar.make(viewBinding!!.root, message, BaseTransientBottomBar.LENGTH_INDEFINITE)
             .setAction(
                 "Retry"
             ) {
@@ -542,8 +524,9 @@ class MainFragment : BaseFragment(), RecyclerViewAdapter.RecyclerAdapterCallback
 
     override fun onDestroyView() {
         super.onDestroyView()
-        page_background?.clear()
-        page_background?.background = null
+        pageBackground?.clear()
+        pageBackground?.background = null
+        viewBinding = null
         onDestroyGlide()
     }
 
