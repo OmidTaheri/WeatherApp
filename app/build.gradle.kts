@@ -116,11 +116,10 @@ dependencies {
 
     implementation(project(mapOf("path" to BuildModules.Data)))
     implementation(project(mapOf("path" to BuildModules.Domain)))
-
     implementation(project(mapOf("path" to BuildModules.DaggerCore)))
-
     implementation(project(mapOf("path" to BuildModules.MainPage)))
     implementation(project(mapOf("path" to BuildModules.UiBase)))
+    implementation(project(mapOf("path" to BuildModules.AndroidBase)))
 
     implementation(JetpackDependencies.NAVIGATION_FRAGMENT)
     implementation(JetpackDependencies.NAVIGATION_UI)
