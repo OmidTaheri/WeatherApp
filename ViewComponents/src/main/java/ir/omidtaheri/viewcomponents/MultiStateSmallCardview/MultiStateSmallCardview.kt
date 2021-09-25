@@ -9,58 +9,53 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import ir.omidtaheri.uibase.LoadWeatherIcon
 import ir.omidtaheri.uibase.adjustAlpha
 import ir.omidtaheri.viewcomponents.databinding.MultiStateSmallCardviewBinding
-import kotlinx.android.synthetic.main.multi_state_large_cardview.view.*
 import kotlinx.android.synthetic.main.multi_state_small_cardview.view.*
-import kotlinx.android.synthetic.main.multi_state_small_cardview.view.IconImageView
-import kotlinx.android.synthetic.main.multi_state_small_cardview.view.date
-import kotlinx.android.synthetic.main.multi_state_small_cardview.view.max_temp
-import kotlinx.android.synthetic.main.multi_state_small_cardview.view.min_temp
 
 
-class MultiStateSmallCardview(context: Context?, attrs: AttributeSet?) :
+class MultiStateSmallCardview(context: Context, attrs: AttributeSet?) :
     ConstraintLayout(context, attrs) {
 
-    private val viewbinding: MultiStateSmallCardviewBinding =
+    private val viewBinding: MultiStateSmallCardviewBinding =
         MultiStateSmallCardviewBinding.inflate(LayoutInflater.from(context), this, true)
 
-    private fun DataVisibility(show: Boolean) {
+    private fun dataVisibility(show: Boolean) {
 
         if (show) {
-            viewbinding.dataGroup.visibility = View.VISIBLE
+            viewBinding.dataGroup.visibility = View.VISIBLE
         } else {
-            viewbinding.dataGroup.visibility = View.GONE
+            viewBinding.dataGroup.visibility = View.GONE
         }
     }
 
     private fun progressBarVisibility(show: Boolean) {
 
         if (show) {
-            viewbinding.progressBar.visibility = View.VISIBLE
+            viewBinding.progressBar.visibility = View.VISIBLE
         } else {
-            viewbinding.progressBar.visibility = View.GONE
+            viewBinding.progressBar.visibility = View.GONE
         }
     }
 
 
     private fun setMinTempText(text: String) {
-        viewbinding.root.min_temp.text = text
+        viewBinding.root.min_temp.text = text
     }
 
-    private  fun setMaxTempText(text: String) {
-        viewbinding.root.max_temp.text = text
+    private fun setMaxTempText(text: String) {
+        viewBinding.root.max_temp.text = text
     }
 
     private fun setDateText(text: String) {
-        viewbinding.root.date.text = text
+        viewBinding.root.date.text = text
     }
 
     private fun setIconImage(path: String) {
-        viewbinding.root.IconImageView.LoadWeatherIcon(path, context)
+        viewBinding.root.IconImageView.LoadWeatherIcon(path, context)
     }
 
 
     fun toLoadingState() {
-        DataVisibility(false)
+        dataVisibility(false)
         progressBarVisibility(true)
     }
 
@@ -70,7 +65,7 @@ class MultiStateSmallCardview(context: Context?, attrs: AttributeSet?) :
         setMaxTempText(maxTemp)
         setIconImage(imagPpath)
         setDateText(data)
-        DataVisibility(true)
+        dataVisibility(true)
         progressBarVisibility(false)
     }
 
@@ -79,11 +74,11 @@ class MultiStateSmallCardview(context: Context?, attrs: AttributeSet?) :
 
         titleColor?.let {
 
-            viewbinding.root.date.setTextColor(titleColor)
-            viewbinding.root.min_temp.setTextColor(titleColor)
-            viewbinding.root.max_temp.setTextColor(titleColor)
+            viewBinding.root.date.setTextColor(titleColor)
+            viewBinding.root.min_temp.setTextColor(titleColor)
+            viewBinding.root.max_temp.setTextColor(titleColor)
 
-            viewbinding.root.IconImageView.setColorFilter(
+            viewBinding.root.IconImageView.setColorFilter(
                 titleColor,
                 android.graphics.PorterDuff.Mode.SRC_IN
             )
@@ -99,7 +94,7 @@ class MultiStateSmallCardview(context: Context?, attrs: AttributeSet?) :
 
     private fun setCardBackGroundColor(@ColorInt color: Int, alpha: Int) {
         val argbColor = adjustAlpha(color, alpha)
-        viewbinding.cardviewParent.setCardBackgroundColor(argbColor)
+        viewBinding.cardviewParent.setCardBackgroundColor(argbColor)
     }
 
 }

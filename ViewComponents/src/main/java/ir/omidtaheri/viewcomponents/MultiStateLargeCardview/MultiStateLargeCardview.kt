@@ -15,85 +15,85 @@ import kotlinx.android.synthetic.main.multi_state_small_cardview.view.max_temp
 import kotlinx.android.synthetic.main.multi_state_small_cardview.view.min_temp
 
 
-class MultiStateLargeCardview(context: Context?, attrs: AttributeSet?) :
+class MultiStateLargeCardview(context: Context, attrs: AttributeSet?) :
     ConstraintLayout(context, attrs) {
 
-    private val viewbinding: MultiStateLargeCardviewBinding =
+    private val viewBinding: MultiStateLargeCardviewBinding =
         MultiStateLargeCardviewBinding.inflate(LayoutInflater.from(context), this, true)
 
-    private fun DataVisibility(show: Boolean) {
+    private fun dataVisibility(show: Boolean) {
 
         if (show) {
-            viewbinding.dataGroup.visibility = View.VISIBLE
+            viewBinding.dataGroup.visibility = View.VISIBLE
         } else {
-            viewbinding.dataGroup.visibility = View.GONE
+            viewBinding.dataGroup.visibility = View.GONE
         }
     }
 
     private fun progressBarVisibility(show: Boolean) {
 
         if (show) {
-            viewbinding.progressBar.visibility = View.VISIBLE
+            viewBinding.progressBar.visibility = View.VISIBLE
         } else {
-            viewbinding.progressBar.visibility = View.GONE
+            viewBinding.progressBar.visibility = View.GONE
         }
     }
 
 
     private fun setCityText(text: String) {
-        viewbinding.root.city.text = text
+        viewBinding.root.city.text = text
     }
 
 
     private fun setDateText(text: String) {
-        viewbinding.root.date.text = text
+        viewBinding.root.date.text = text
     }
 
 
     private  fun setTempText(text: String) {
-        viewbinding.root.temp.text = text
+        viewBinding.root.temp.text = text
     }
 
 
     private fun setSatusText(text: String) {
-        viewbinding.root.status.text = text
+        viewBinding.root.status.text = text
     }
 
 
     private fun setMinTempText(text: String) {
-        viewbinding.root.min_temp.text = text
+        viewBinding.root.min_temp.text = text
     }
 
     private  fun setMaxTempText(text: String) {
-        viewbinding.root.max_temp.text = text
+        viewBinding.root.max_temp.text = text
     }
 
     private fun setIconImage(path: String) {
-        viewbinding.root.IconImageView.LoadWeatherIcon(path, context)
+        viewBinding.root.IconImageView.LoadWeatherIcon(path, context)
     }
 
     fun setColor(
         colorList: List<Int>
     ) {
-        viewbinding.root.city.setTextColor(colorList.get(1))
-        viewbinding.root.date.setTextColor(colorList.get(1))
-        viewbinding.root.temp.setTextColor(colorList.get(1))
-        viewbinding.root.min_temp.setTextColor(colorList.get(1))
-        viewbinding.root.max_temp.setTextColor(colorList.get(1))
+        viewBinding.root.city.setTextColor(colorList[1])
+        viewBinding.root.date.setTextColor(colorList[1])
+        viewBinding.root.temp.setTextColor(colorList[1])
+        viewBinding.root.min_temp.setTextColor(colorList[1])
+        viewBinding.root.max_temp.setTextColor(colorList[1])
 
-        viewbinding.root.IconImageView.setColorFilter(
-            colorList.get(0),
+        viewBinding.root.IconImageView.setColorFilter(
+            colorList[0],
             android.graphics.PorterDuff.Mode.MULTIPLY
         )
-        viewbinding.root.status.setTextColor(colorList.get(1))
+        viewBinding.root.status.setTextColor(colorList[1])
 
-        setCardBackGroundColor(colorList.get(2), 220)
+        setCardBackGroundColor(colorList[2], 220)
 
 
     }
 
     fun toLoadingState() {
-        DataVisibility(false)
+        dataVisibility(false)
         progressBarVisibility(true)
     }
 
@@ -115,14 +115,14 @@ class MultiStateLargeCardview(context: Context?, attrs: AttributeSet?) :
         setMaxTempText(maxTemp)
         setIconImage(imagPpath)
 
-        DataVisibility(true)
+        dataVisibility(true)
         progressBarVisibility(false)
     }
 
 
     private fun setCardBackGroundColor(@ColorInt color: Int, alpha: Int) {
         val argbColor = adjustAlpha(color, alpha)
-        viewbinding.cardviewParent.setCardBackgroundColor(argbColor)
+        viewBinding.cardviewParent.setCardBackgroundColor(argbColor)
     }
 
 }
