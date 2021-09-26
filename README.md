@@ -47,7 +47,7 @@ WeatherApp is an application developed using modern Android development tools an
 
 [![Download Demo apk](https://img.shields.io/badge/-Download%20Demo%20apk-orange)](#)
 
-[Download Demo apk](https://drive.google.com/file/d/1ZE4NvkX1QFaZmwbTcoWBSpBJcl6F8Hvk/view?usp=sharing)
+[Download Demo apk](https://github.com/OmidTaheri/WeatherApp/blob/master/Apks/WeatherApp-v1.1.0.apk)
 
 ![-----------------------------------------------------](ScreenShots/rainbow.png)
 
