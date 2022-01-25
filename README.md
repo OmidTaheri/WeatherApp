@@ -27,7 +27,7 @@ WeatherApp is an application developed using modern Android development tools an
  ![-----------------------------------------------------](ScreenShots/rainbow.png)
   
 ### `Tools & Dependencies`
-* Clean Ahitecture(MVVM)
+* Clean Architecture(MVVM)
 * Single Activity
 * Google Material Design
 * Jetpack Navigation Component
