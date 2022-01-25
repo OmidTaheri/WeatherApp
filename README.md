@@ -34,8 +34,8 @@ WeatherApp is an application developed using modern Android development tools an
 * Jetpack Room Database
 * Retrofit- Network Requests
 * Dagger- Dependency Injection
-* RxJava/RxAndroid- Reacttive Programming
-* Kotlin DSL
+* RxJava/RxAndroid- Reactive Programming
+* Kotlin Script– Build files
 * [OpenWeatherMap API](https://openweathermap.org/api)
 
  ![-----------------------------------------------------](ScreenShots/rainbow.png)
